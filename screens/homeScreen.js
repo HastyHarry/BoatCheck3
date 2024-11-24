@@ -34,7 +34,7 @@ export default function HomeScreen({ theme }) {
   };
 
   return (
-    <View style={{ backgroundColor: theme.colors.background, flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{ backgroundColor: theme.colors.background, flex: 1, justifyContent: 'auto', alignItems: 'auto' }}>
       <Text>Home Screen</Text>
 
       {selectedOption === null ? (
