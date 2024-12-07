@@ -18,6 +18,7 @@ import HomeScreen from './screens/homeScreen'
 import InspectScreen from './screens/inspectScreen'
 import LoadingScreen from './screens/loading'
 
+import DrawerComponent from './src/drawerComponent'
 // import activeTheme from './themes'
 
 SplashScreen.preventAutoHideAsync();
@@ -29,7 +30,7 @@ export default function App() {
   const [dataBuffer, setDataBuffer] = useState([]);
   const [inputData, setInput] = useState({ boatName: "" })
   const [isLoading, setIsLoading] = useState(true); // Initialize loading state
-
+  const [currentInspectionData, setCurrentInspection] = useState({inspectionType: null})
 
   useEffect(() => {
     const loadData = async () => {
@@ -44,10 +45,6 @@ export default function App() {
 
   const colorScheme = useColorScheme()
   const theme = colorScheme === "dark" ? { ...darkCustomTheme() } : { ...lightCustomTheme() }
-
-  const HomeScreenWithTheme = (props) => <HomeScreen {...props} theme={theme} />;
-  const InspectScreenWithTheme = (props) => <InspectScreen {...props} theme={theme} />;
-  const LoadingScreenWithTheme = (props) => <LoadingScreen {...props} theme={theme} />;
 
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -64,59 +61,68 @@ export default function App() {
     return null; // Or return a loading component
   }
 
+
   return (
     <PaperProvider theme={theme}>
-      {!isLoading ? (
-        <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={{
-              headerShown: false,
-              tabBarStyle: { backgroundColor: theme.colors.secondaryContainer },
-              tabBarActiveTintColor: theme.colors.secondary,
-              tabBarInactiveTintColor: theme.colors.onSecondary,
-            }}
-          >
-            <Tab.Screen
-              name="Check"
-              component={HomeScreenWithTheme}
-              options={{
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons name="clipboard-edit-outline" color={color} size={size} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Inspections"
-              component={InspectScreenWithTheme}
-              options={{
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons name="history" color={color} size={size} />
-                ),
-              }}
-            />
-          </Tab.Navigator>
-        </NavigationContainer>)
-        : (<NavigationContainer>
-          <Tab.Navigator
-            screenOptions={{
-              headerShown: false,
-              tabBarStyle: { backgroundColor: theme.colors.secondaryContainer },
-              tabBarActiveTintColor: theme.colors.secondary,
-              tabBarInactiveTintColor: theme.colors.onSecondary,
-            }}>
-            <Tab.Screen
-              name="Loading"
-              component={LoadingScreenWithTheme}
-              options={{
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons name="clipboard-edit-outline" color={color} size={size} />
-                ),
-              }}>
-            </Tab.Screen>
-          </Tab.Navigator>
-        </NavigationContainer>
-        )
-      }
+      <NavigationContainer>
+        <DrawerComponent theme={theme} currentInspectionData={currentInspectionData} setCurrentInspection={setCurrentInspection}/>
+      </NavigationContainer>
     </PaperProvider>
   )
+
+  // return (
+  //   <PaperProvider theme={theme}>
+  //     {!isLoading ? (
+  //       <NavigationContainer>
+  //         <Tab.Navigator
+  //           screenOptions={{
+  //             headerShown: false,
+  //             tabBarStyle: { backgroundColor: theme.colors.secondaryContainer },
+  //             tabBarActiveTintColor: theme.colors.secondary,
+  //             tabBarInactiveTintColor: theme.colors.onSecondary,
+  //           }}
+  //         >
+  //           <Tab.Screen
+  //             name="Check"
+  //             component={HomeScreenWithTheme}
+  //             options={{
+  //               tabBarIcon: ({ color, size }) => (
+  //                 <MaterialCommunityIcons name="clipboard-edit-outline" color={color} size={size} />
+  //               ),
+  //             }}
+  //           />
+  //           <Tab.Screen
+  //             name="Inspections"
+  //             component={InspectScreenWithTheme}
+  //             options={{
+  //               tabBarIcon: ({ color, size }) => (
+  //                 <MaterialCommunityIcons name="history" color={color} size={size} />
+  //               ),
+  //             }}
+  //           />
+  //         </Tab.Navigator>
+  //       </NavigationContainer>)
+  //       : (<NavigationContainer>
+  //         <Tab.Navigator
+  //           screenOptions={{
+  //             headerShown: false,
+  //             tabBarStyle: { backgroundColor: theme.colors.secondaryContainer },
+  //             tabBarActiveTintColor: theme.colors.secondary,
+  //             tabBarInactiveTintColor: theme.colors.onSecondary,
+  //           }}>
+  //           <Tab.Screen
+  //             name="Loading"
+  //             component={LoadingScreenWithTheme}
+  //             options={{
+  //               tabBarIcon: ({ color, size }) => (
+  //                 <MaterialCommunityIcons name="clipboard-edit-outline" color={color} size={size} />
+  //               ),
+  //             }}>
+  //           </Tab.Screen>
+  //         </Tab.Navigator>
+  //       </NavigationContainer>
+  //       )
+  //     }
+  //   </PaperProvider>
+  // )
 }
