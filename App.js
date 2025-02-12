@@ -11,12 +11,19 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
+
 import { clearAllData, handleSave, handleLoadAll } from './utils/context'
 import { lightCustomTheme, darkCustomTheme } from './styles'
 
 import HomeScreen from './screens/homeScreen'
 import InspectScreen from './screens/inspectScreen'
 import LoadingScreen from './screens/loading'
+
+import Step1 from './screens/sailboat/step1';
+import Step2 from './screens/sailboat/step2';
 
 // import activeTheme from './themes'
 
@@ -36,7 +43,7 @@ export default function App() {
       await handleLoadAll(setDataBuffer)
       console.log('dataBuffer', dataBuffer)
       setInput(dataBuffer[dataBuffer.length])
-      setIsLoading(false); 
+      setIsLoading(false);
     }
     loadData();
     console.log('APP inputData', inputData)
@@ -48,6 +55,8 @@ export default function App() {
   const HomeScreenWithTheme = (props) => <HomeScreen {...props} theme={theme} />;
   const InspectScreenWithTheme = (props) => <InspectScreen {...props} theme={theme} />;
   const LoadingScreenWithTheme = (props) => <LoadingScreen {...props} theme={theme} />;
+  const Step1WithTheme = (props) => <Step1 {...props} theme={theme} />;
+  const Step2WithTheme = (props) => <Step2 {...props} theme={theme} />;
 
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -68,52 +77,38 @@ export default function App() {
     <PaperProvider theme={theme}>
       {!isLoading ? (
         <NavigationContainer>
-          <Tab.Navigator
+          <Stack.Navigator
             screenOptions={{
-              headerShown: false,
-              tabBarStyle: { backgroundColor: theme.colors.secondaryContainer },
-              tabBarActiveTintColor: theme.colors.secondary,
-              tabBarInactiveTintColor: theme.colors.onSecondary,
+              headerStyle: { backgroundColor: theme.colors.primary },
+              headerTintColor: theme.colors.onPrimary,
+              headerTitleAlign: 'center',
             }}
           >
-            <Tab.Screen
-              name="Check"
-              component={HomeScreenWithTheme}
-              options={{
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons name="clipboard-edit-outline" color={color} size={size} />
-                ),
-              }}
+            <Stack.Screen
+              name = "Home"
+              component = {HomeScreenWithTheme}
+              options={{ title: "Boat Inspection" }}
             />
-            <Tab.Screen
-              name="Inspections"
-              component={InspectScreenWithTheme}
-              options={{
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons name="history" color={color} size={size} />
-                ),
-              }}
-            />
-          </Tab.Navigator>
+            <Stack.Screen name="SailboatCheck" component={InspectScreenWithTheme} options={{ title: "Check Sailboat" }} />
+              <Stack.Screen name="SailboatStep1" component={Step1WithTheme} options={{ title: "Sailboat Step 1" }} />
+              <Stack.Screen name="SailboatStep2" component={Step2WithTheme} options={{ title: "Sailboat Step 2" }} />
+            <Stack.Screen name="CatamaranCheck" component={InspectScreenWithTheme} options={{ title: "Check Catamaran" }} />
+            <Stack.Screen name="History" component={InspectScreenWithTheme} options={{ title: "Inspection History" }} />
+          </Stack.Navigator>
         </NavigationContainer>)
         : (<NavigationContainer>
-          <Tab.Navigator
+          <Stack.Navigator
             screenOptions={{
               headerShown: false,
               tabBarStyle: { backgroundColor: theme.colors.secondaryContainer },
               tabBarActiveTintColor: theme.colors.secondary,
               tabBarInactiveTintColor: theme.colors.onSecondary,
             }}>
-            <Tab.Screen
-              name="Loading"
+            <Stack.Screen
+              name = "Loading"
               component={LoadingScreenWithTheme}
-              options={{
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons name="clipboard-edit-outline" color={color} size={size} />
-                ),
-              }}>
-            </Tab.Screen>
-          </Tab.Navigator>
+              options={{ title: "Loading" }}/>
+          </Stack.Navigator>
         </NavigationContainer>
         )
       }

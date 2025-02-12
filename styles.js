@@ -9,6 +9,51 @@
 
 import { View, StyleSheet } from 'react-native';
 
+export const createStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      padding: 16,
+      backgroundColor: theme.colors.background,
+    },
+    title: {
+      marginBottom: 16,
+      textAlign: 'center',
+      color: theme.colors.onBackground,
+    },
+    card: {
+      marginVertical: 8,
+      backgroundColor: theme.colors.surface,
+      padding: 16,
+      borderRadius: 10,
+      shadowColor: theme.colors.shadow,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+      elevation: 4,
+    },
+    input: {
+      marginBottom: 16,
+      backgroundColor: theme.colors.surfaceVariant,
+      color: theme.colors.onSurface,
+      padding: 10,
+      borderRadius: 8,
+    },
+    button: {
+      backgroundColor: theme.colors.primary,
+      paddingVertical: 12,
+      paddingHorizontal: 30,
+      borderRadius: 10,
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: theme.colors.onPrimary,
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+  });
+
 export const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -26,7 +71,14 @@ export const styles = StyleSheet.create({
       marginBottom: 16,
     },
     button: {
-      marginTop: 16,
+      paddingVertical: 12,
+      paddingHorizontal: 30,
+      borderRadius: 10,
+      alignItems: 'center',
+    },
+    buttonText: {
+      fontSize: 16,
+      fontWeight: 'bold',
     },
   });
 

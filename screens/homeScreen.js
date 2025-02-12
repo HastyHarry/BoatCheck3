@@ -1,64 +1,113 @@
-
 import React from 'react';
-import { Text, Button, Card, TextInput, Appbar } from 'react-native-paper';
-import { View } from 'react-native';
-import { useState, useEffect, useCallback } from 'react';
-import { styles } from '../styles'
+import { View, TouchableOpacity, Dimensions } from 'react-native';
+import { Card, Text } from 'react-native-paper';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { styles } from '../styles';
 
-import SailBoatChecklist from '../screens/checklists/sailboat'
-
-import {handleSave} from '../utils/context'
-
-export default function HomeScreen({ theme }) {
-
-  const [checklistScreen, setChecklistScreen] = useState(null);
-
-  // console.log('Selected option', selectedOption)
-
-  const [inputData, setInput] = useState({boatName:""})
-
-  console.log('inputData homescreen', inputData)
-
-  // useEffect(() => {
-  //   handleSave('TestKey',inputData)
-  //   console.log('saving Data')
-  // }, [JSON.stringify(inputData)]); 
-
-  // const handleOptionSelect = (option) => {
-  //   setSelectedOption(option);
-  // };
-
-  // const handleInputChange = (name, value) => {
-  //   setInputs((prevInputs) => ({
-  //     ...prevInputs,
-  //     [name]: value,
-  //   }));
-  // };
+export default function HomeScreen({ navigation, theme }) {
+  // Determine screen width and decide on the card width.
+  const screenWidth = Dimensions.get('window').width;
+  const isLargeScreen = screenWidth >= 600;  // When screen is large, use two columns
+  const cardWidth = isLargeScreen ? (screenWidth / 2) - 32 : screenWidth - 32;
 
   return (
-    <View style={{ backgroundColor: theme.colors.background, flex: 1, justifyContent: 'auto', alignItems: 'auto' }}>
-      <Text>Home Screen</Text>
-      {checklistScreen !== null ? (
-      <Appbar.Header>
-        <Appbar.BackAction onPress={() => setChecklistScreen(null)} />
-        <Appbar.Content title="Checklist Selection" />
-      </Appbar.Header>) : (<View></View>)}
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.colors.background,
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: 'flex-start',  // Align cards to the left
+          alignItems: 'flex-start', // Align cards to the top
+          paddingVertical: 16,
+          flex: 1,
+        },
+      ]}
+    >
+      <Text
+        variant="headlineLarge"
+        style={[styles.title, { color: theme.colors.primary, width: '100%', textAlign: 'center' }]}
+      >
+        Select an Option
+      </Text>
 
-      {checklistScreen === null ? (
-        <View>
-          <Text variant="headlineLarge" style={styles.title} textColor = {theme.colors.primary} >
-            Select an Option
-          </Text>
-          <Button mode="contained" onPress={() => setChecklistScreen('SailBoat')} 
-            style={styles.button} buttonColor = {theme.colors.primaryContainer} textColor = {theme.colors.primary}>
-            SailBoat
-          </Button>
-          <Button mode="contained" onPress={() => setChecklistScreen('Catamaran')} 
-            style={styles.button} buttonColor = {theme.colors.primaryContainer} textColor = {theme.colors.primary}>
-            Catamaran
-          </Button>
-        </View>
-      ) : checklistScreen === "SailBoat" ? <SailBoatChecklist theme={theme} styles={styles} /> : (<View></View>)}
+      {/* Check Sailboat Card */}
+      <TouchableOpacity onPress={() => navigation.navigate('SailboatStep1')}>
+        <Card
+          style={[
+            styles.card,
+            {
+              width: cardWidth,
+              backgroundColor: theme.colors.surface,
+              marginRight: 16  // Add margin between cards in large screen
+            },
+          ]}
+        >
+          <Card.Content style={{ alignItems: 'center' }}>
+            <MaterialCommunityIcons
+              name="sail-boat"
+              size={50}
+              color={theme.colors.primary}
+              style={{ marginBottom: 10 }}
+            />
+            <Text variant="titleLarge" style={{ color: theme.colors.onSurface }}>
+              Check Sailboat
+            </Text>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
+
+      {/* Check Catamaran Card */}
+      <TouchableOpacity onPress={() => navigation.navigate('CatamaranCheck')}>
+        <Card
+          style={[
+            styles.card,
+            {
+              width: cardWidth,
+              backgroundColor: theme.colors.surface,
+              marginRight: 16,  // Add margin between cards in large screen
+            },
+          ]}
+        >
+          <Card.Content style={{ alignItems: 'center' }}>
+            <MaterialCommunityIcons
+              name="ferry" // Icon for catamaran
+              size={50}
+              color={theme.colors.primary}
+              style={{ marginBottom: 10 }}
+            />
+            <Text variant="titleLarge" style={{ color: theme.colors.onSurface }}>
+              Check Catamaran
+            </Text>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
+
+      {/* Inspection History Card */}
+      <TouchableOpacity onPress={() => navigation.navigate('History')}>
+        <Card
+          style={[
+            styles.card,
+            {
+              width: cardWidth,
+              backgroundColor: theme.colors.surface,
+            },
+          ]}
+        >
+          <Card.Content style={{ alignItems: 'center' }}>
+            <MaterialCommunityIcons
+              name="history"
+              size={50}
+              color={theme.colors.primary}
+              style={{ marginBottom: 10 }}
+            />
+            <Text variant="titleLarge" style={{ color: theme.colors.onSurface }}>
+              Inspection History
+            </Text>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
     </View>
   );
 }
