@@ -50,6 +50,7 @@ export default function App() {
   }, []); // Empty dependency array means this runs once on mount
 
   const colorScheme = useColorScheme()
+
   const theme = colorScheme === "dark" ? { ...darkCustomTheme() } : { ...lightCustomTheme() }
 
   const HomeScreenWithTheme = (props) => <HomeScreen {...props} theme={theme} />;
@@ -79,7 +80,7 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{
-              headerStyle: { backgroundColor: theme.colors.primary },
+              headerStyle: { backgroundColor: theme.colors.secondary },
               headerTintColor: theme.colors.onPrimary,
               headerTitleAlign: 'center',
             }}
