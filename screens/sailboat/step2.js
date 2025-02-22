@@ -12,7 +12,7 @@ export default function Step2({ navigation, theme }) {
 
   return (
     <View style={styles.checkListContainer}>
-      <Text>External Checks: Mast, Cockpit, etc.</Text>
+      {/* <Text>External Checks: Mast, Cockpit, etc.</Text> */}
       <PhotoPicker onImageSelected={(imageUri) => console.log("Selected Image:", imageUri)} />
 
       <Button mode="contained" onPress={() => navigation.goBack()}
