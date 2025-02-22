@@ -83,6 +83,22 @@ export const createStyles = (theme) =>
       borderWidth: 1,
       borderColor: '#ccc',
     },
+    deleteButton: {
+      backgroundColor: '#e74c3c',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 100,
+      marginBottom: 16,
+      borderRadius: 12,
+    },
+    deleteText: {
+      color: '#fff',
+      fontWeight: 'bold',
+      marginTop: 4,
+    },
+    scrollContainer: {
+      paddingVertical: 10,
+    },
   });
 
 export const styles = StyleSheet.create({

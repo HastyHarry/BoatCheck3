@@ -25,7 +25,7 @@ export default function HomeScreen({ navigation, theme }) {
       <NaviCard
         title="Check Sailboat"
         icon="sail-boat"
-        onPress={() => navigation.navigate('SailboatStep1')}
+        onPress={() => navigation.navigate('SailboatStep0')}
         theme={theme}
         cardWidth={cardWidth}
       />
