@@ -6,7 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 export default function NaviTableOfContent({ title, subTitle, onPress, theme, cardWidth }) {
   return (
     <TouchableOpacity onPress={onPress}>
-      <Card style={[localStyles.card, { width: cardWidth, backgroundColor: theme.colors.surfaceVariant }]}>
+      <Card style={[localStyles.card, { width: cardWidth, backgroundColor: theme.colors.surface }]}>
         <Card.Content style={localStyles.cardContent}>
           <Text variant = 'titleLarge' style={[localStyles.cardTextTitle, { color: theme.colors.primary }]}>
             {title}
@@ -28,7 +28,7 @@ const localStyles = StyleSheet.create({
     marginVertical: 8,
     height: 80,
     borderRadius: 12,
-    // padding: 16,
+    // padding: 1,
     // paddingHorizontal: 12,
     // paddingVertical: 2,
     shadowOffset: { width: 0, height: 2 },
@@ -40,6 +40,7 @@ const localStyles = StyleSheet.create({
   },
   cardContent:{
     flex: 1,
+    // padding:10,
     justifyContent: 'center',
     alignItems: 'flex-start', // Центрирует текст по вертикали
     paddingHorizontal: 12, // Отступы по бокам для красоты

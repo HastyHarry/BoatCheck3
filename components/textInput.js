@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TextInput } from 'react-native-paper';
+import { StyleSheet } from 'react-native';
 
 export default function CustomTextInput({ 
   label, 
@@ -18,11 +19,14 @@ export default function CustomTextInput({
       value={value}
       onChangeText={onChangeText}
       placeholder={isFocused ? '' : placeholder} // Disappears when focused
-      placeholderTextColor = {theme.colors.onSecondary}
+      placeholderTextColor = {theme.colors.primary}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
       mode = "outlined"
-      outlineColor={error ? theme.colors.error : theme.colors.outline}
+      outlineStyle={[
+        {borderRadius:12},
+        {borderColor : error ? theme.colors.error : theme.colors.outline}
+      ]}
       activeOutlineColor={error ? theme.colors.error : theme.colors.secondary}
       textColor={theme.colors.onSurface}
       style={[styles.input, 
@@ -34,9 +38,10 @@ export default function CustomTextInput({
 }
 
 // Styles
-import { StyleSheet } from 'react-native';
+
 const styles = StyleSheet.create({
   input: {
     marginBottom: 16,
+    borderRadius: 8
   },
 });

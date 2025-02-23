@@ -15,7 +15,8 @@ import Animated, {
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
-export default function PhotoPicker({ onImagesSelected }) {
+export default function PhotoPicker({ onImagesSelected, theme }) {
+    const cardWidth = theme.cardWidth
     const [photos, setPhotos] = useState([]);
 
     useEffect(() => {
@@ -76,22 +77,18 @@ export default function PhotoPicker({ onImagesSelected }) {
         }));
 
         return (
-            <View style={styles.swipeContainer}>
+            <View >
                 {/* Фон с иконкой удаления */}
-                <View style={localStyles.deleteBackground}>
-                    {/* <Card>
-                        <Card.Cover source={{ uri: photoUri }} style={styles.imagePreview} />
-                    </Card> */}
-
+                <View style={[localStyles.deleteBackground, {width:Math.abs(threshold)}]}>
                     <MaterialCommunityIcons name="trash-can-outline" size={30} color="#fff" />
                     <Text style={localStyles.deleteText}>Delete</Text>
                 </View>
 
                 {/* Свайпаемый контент */}
                 <GestureDetector gesture={panGesture}>
-                    <AnimatedView style={[styles.card, animatedStyle]}>
-                        <Card>
-                            <Card.Cover source={{ uri: photoUri }} style={styles.imagePreview} />
+                    <AnimatedView style={[ animatedStyle]}>
+                        <Card style={localStyles.card}>
+                            <Card.Cover source={{ uri: photoUri }} style={[localStyles.imagePreview, {width:theme.cardWidth+32, height:200}]} />
                         </Card>
                     </AnimatedView>
                 </GestureDetector>
@@ -100,12 +97,12 @@ export default function PhotoPicker({ onImagesSelected }) {
     };
 
     return (
-        <View style={styles.photoContainer}>
+        <View styles = {{padding:0}}>
             {photos.map((photoUri, index) => (
                 <SwipeablePhoto key={index} photoUri={photoUri} />
             ))}
-            <TouchableOpacity onPress={takePhoto} style={styles.imagePlaceholder}>
-                <Card style={localStyles.addPhotoCard} onPress={takePhoto}>
+            <TouchableOpacity onPress={takePhoto} style={localStyles.imagePlaceholder}>
+                <Card style={[localStyles.card, {width:theme.cardWidth}]} onPress={takePhoto}>
                     <Card.Content style={localStyles.addPhotoContent}>
                         <MaterialCommunityIcons name="camera" size={50} color="gray" />
                         <Text style={localStyles.addPhotoText}>Add Photo</Text>
@@ -123,12 +120,11 @@ const localStyles = StyleSheet.create({
         right: 0,
         top: 0,
         bottom: 0,
-        width: 100,
         backgroundColor: '#ff4d4f',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 12,
-        marginTop: 9,
+        marginTop: 8,
         marginBottom: 8,
     },
     deleteText: {
@@ -136,22 +132,55 @@ const localStyles = StyleSheet.create({
         marginTop: 5,
         fontSize: 12,
     },
-    addPhotoCard: {
+    card: {
+        overflow: 'hidden',
+        // backgroundColor: theme.colors.surface,
+        marginVertical: 8,
+        borderRadius: 12,
+        padding: 0,
+        // shadowColor: theme.colors.shadow,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 4,
         alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 20,
-        marginVertical: 10,
-        borderRadius: 16,
-        backgroundColor: '#f0f0f0',
-    },
-
+      },
     addPhotoContent: {
         alignItems: 'center',
     },
-
     addPhotoText: {
-        marginTop: 8,
         fontSize: 16,
         color: 'gray',
     },
+    // photoContainer: {
+    //     alignItems: 'center',
+    //     marginVertical: 0,
+    // },
+    imageWrapper: {
+        alignItems: 'center',
+        // marginTop: 10,
+    },
+    imagePreview: {
+        // width: '100%', height: '100%',
+        // width: 200,
+        // height: 200,
+        borderRadius: 12,
+        resizeMode: 'cover',  // Или 'contain'
+        // backgroundColor: '#eee',
+        // margin: 0,                // Убирает лишние отступы
+        // padding: 0,
+    },
+    previewText: {
+        color: 'gray',
+        fontSize: 14,
+    },
+    imagePlaceholder: {
+        // width: 200,
+        // height: 200,
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        // backgroundColor: '#f0f0f0',
+        // borderColor: '#ccc',
+    },
+
 });

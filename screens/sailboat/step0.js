@@ -7,7 +7,7 @@ import CustomTextInput from '../../components/textInput'
 import DateInput from '../../components/dateInput';
 import NaviTableOfContent from '../../components/naviTableOfContent';
 
-
+//Table of contents
 export default function Step0({ navigation, theme }) {
 
 
@@ -32,9 +32,17 @@ export default function Step0({ navigation, theme }) {
         <View style={styles.checkListContainer}>
 
             <NaviTableOfContent
-                title = "Common Information"
-                subTitle = 'Boat Name, Year, Port, etc...'
+                title="Common Information"
+                subTitle='Boat Name, Year, Port, etc...'
                 onPress={() => navigation.navigate('SailboatStep1')}
+                theme={theme}
+                cardWidth={theme.cardWidth}
+            />
+
+            <NaviTableOfContent
+                title="Intenal equipment"
+                subTitle='Salon, galley, etc..'
+                onPress={() => navigation.navigate('SailboatStep2')}
                 theme={theme}
                 cardWidth={theme.cardWidth}
             />

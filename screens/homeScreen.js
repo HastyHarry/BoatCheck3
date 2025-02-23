@@ -3,7 +3,7 @@ import { View, Dimensions } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useColorScheme } from 'react-native';
 import { lightCustomTheme, darkCustomTheme } from '../styles';
-import NaviCard from '../components/naviCard'
+import NaviTitle from '../components/naviTitle'
 
 
 import { createStyles } from '../styles';
@@ -17,26 +17,26 @@ export default function HomeScreen({ navigation, theme }) {
 
   return (
     <View style={styles.container}>
-      <Text variant="headlineLarge" style={styles.title}>
+      {/* <Text variant="headlineLarge" style={styles.title}>
         Select an Option
-      </Text>
+      </Text> */}
 
       {/* Используем naviCard для всех карточек */}
-      <NaviCard
+      <NaviTitle
         title="Check Sailboat"
         icon="sail-boat"
         onPress={() => navigation.navigate('SailboatStep0')}
         theme={theme}
         cardWidth={cardWidth}
       />
-      <NaviCard
+      <NaviTitle
         title="Check Catamaran"
         icon="ferry"
         onPress={() => navigation.navigate('CatamaranCheck')}
         theme={theme}
         cardWidth={cardWidth}
       />
-      <NaviCard
+      <NaviTitle
         title="Inspection History"
         icon="history"
         onPress={() => navigation.navigate('History')}

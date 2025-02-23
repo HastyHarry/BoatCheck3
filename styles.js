@@ -65,7 +65,7 @@ export const createStyles = (theme) =>
       width: 200,
       height: 200,
       borderRadius: 10,
-      marginBottom: 8,
+      marginBottom: 0,
       resizeMode: 'cover',  // Или 'contain'
       backgroundColor: '#eee'
     },

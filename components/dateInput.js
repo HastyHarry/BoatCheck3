@@ -22,7 +22,11 @@ export default function DateInput({ label, value, onChange, error }) {
           value={value ? value.toLocaleDateString() : ''}
           editable={false}
           mode= "outlined"
-          outlineColor={error ? theme.colors.error : theme.colors.outline}
+        //   outlineColor={error ? theme.colors.error : theme.colors.outline}
+          outlineStyle={[
+            {borderRadius:12},
+            {borderColor : error ? theme.colors.error : theme.colors.outline}
+          ]}
           activeOutlineColor={error ? theme.colors.error : theme.colors.primary}
           textColor={theme.colors.onSurface}
           placeholderTextColor={theme.colors.onSurfaceVariant}

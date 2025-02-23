@@ -14,7 +14,7 @@ export default function Step2({ navigation, theme }) {
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.checkListContainer}>
         {/* <Text>External Checks: Mast, Cockpit, etc.</Text> */}
-        <PhotoPicker onImageSelected={(imageUri) => console.log("Selected Image:", imageUri)} />
+        <PhotoPicker onImageSelected={(imageUri) => console.log("Selected Image:", imageUri)} theme={theme} />
 
         <Button mode="contained" onPress={() => navigation.goBack()}
           buttonColor={theme.colors.secondary}
@@ -27,3 +27,4 @@ export default function Step2({ navigation, theme }) {
     </ScrollView>
   );
 }
+

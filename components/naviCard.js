@@ -3,45 +3,33 @@ import { TouchableOpacity } from 'react-native';
 import { Card, Text } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default function NaviCard({ title, icon, onPress, theme, cardWidth }) {
-  return (
-    <TouchableOpacity onPress={onPress}>
-      <Card style={[styles.card, { width: cardWidth, backgroundColor: theme.colors.surfaceVariant }]}>
-        <Card.Content style={{ alignItems: 'center' }}>
-          <MaterialCommunityIcons
-            name={icon}
-            size={50}
-            color={theme.colors.primary}
-            style={styles.cardIcon}
-          />
-          <Text variant="titleLarge" style={[styles.cardText, { color: theme.colors.primary }]}>
-            {title}
-          </Text>
-        </Card.Content>
-      </Card>
-    </TouchableOpacity>
-  )
-}
+export default function NaviCard({ title, onPress, theme, cardWidth }) {
+    return (
+      <TouchableOpacity onPress={onPress}>
+        <Card style={[localStyles.card, { width: cardWidth, backgroundColor: theme.colors.surface }]}>
+          <Card.Content style={localStyles.cardContent}>
+          <Text style={[localStyles.label, { color: theme?.colors?.onSurface || '#000' }]}>{title}</Text>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
+    )
+  }
 
 // Стили для карточки
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
-  card: {
-    marginVertical: 8,
-    borderRadius: 12,
-    padding: 16,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-    alignItems: 'center',
-  },
-  cardIcon: {
-    marginBottom: 10,
-  },
-  cardText: {
-    fontSize: 18,
-    fontWeight: 'light',
-  },
-});
+const localStyles = StyleSheet.create({
+    card: {
+        marginBottom: 12,
+        borderRadius: 12,
+        elevation: 2, // For Android shadow
+      },
+      content: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      },
+      label: {
+        fontSize: 16,
+      },
+  });

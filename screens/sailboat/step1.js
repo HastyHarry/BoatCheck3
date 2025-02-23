@@ -5,7 +5,8 @@ import { useColorScheme } from 'react-native';
 import { createStyles} from '../../styles';
 import CustomTextInput from '../../components/textInput'
 import DateInput from '../../components/dateInput';
-
+import CheckboxItem from '../../components/checkboxItem';
+import NaviCard from '../../components/naviCard';
 
 export default function Step1({ navigation, theme }) {
 
@@ -29,7 +30,6 @@ export default function Step1({ navigation, theme }) {
 
     return (
         <View style={styles.checkListContainer}>
-            <Text style={styles.Text}>Internal Checks: Salon, Cabins, etc.</Text>
 
             <CustomTextInput
                 label="Name"
@@ -47,15 +47,23 @@ export default function Step1({ navigation, theme }) {
                 error={error}
             />
 
+            <CheckboxItem label='test checkbox' theme={theme}></CheckboxItem>
+
             <DateInput label="Select Date" value={date} onChange={setDate} />
 
-            <Button mode="contained" onPress={() => navigation.navigate('SailboatStep2')}
+            <NaviCard                
+                title = "Internal Damages"
+                onPress={() => navigation.navigate('SailboatStep2')}
+                theme={theme}
+                cardWidth={theme.cardWidth}> </NaviCard>
+
+            {/* <Button mode="contained" onPress={() => navigation.navigate('SailboatStep0')}
                 buttonColor = {theme.colors.secondary}
                 textColor = {theme.colors.onSecondary}
                 style = {[{borderRadius: 5}, {marginTop: 8}]}>
                 
-                Submit
-            </Button >
+                Save
+            </Button > */}
         </View>
     );
 }
