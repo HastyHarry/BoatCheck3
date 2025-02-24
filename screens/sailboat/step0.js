@@ -29,7 +29,7 @@ export default function Step0({ navigation, theme }) {
     // const style = styles(theme)
 
     return (
-        <View style={styles.checkListContainer}>
+        <View style={[styles.checkListContainer,{padding:16}]}>
 
             <NaviTableOfContent
                 title="Common Information"

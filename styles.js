@@ -25,7 +25,7 @@ export const createStyles = (theme) =>
     checkListContainer: {
       flex: 1,
       justifyContent: 'flex-start',
-      padding: 16,
+      // padding: 16,
       backgroundColor: theme.colors.background,
     },
     title: {
