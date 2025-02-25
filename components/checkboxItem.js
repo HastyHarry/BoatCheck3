@@ -20,7 +20,7 @@ export default function CheckboxCard({ label = 'Check item', hint = "", theme, s
       ]}
     >
       <Card.Content style={localStyles.content}>
-        <Text style={[localStyles.label, { color: theme?.colors?.onSurface || '#000' }]}>{label}</Text>
+        <Text style={[localStyles.label, { color: theme?.colors?.onSurfaceVariant || '#000' }]}>{label}</Text>
         {checked && (
             <MaterialCommunityIcons name="check-circle" size={18} color = {theme?.colors?.primary || "#fff"} />
         //   <IconButton
@@ -37,7 +37,8 @@ export default function CheckboxCard({ label = 'Check item', hint = "", theme, s
 // localStyles
 const localStyles = StyleSheet.create({
   card: {
-    marginBottom: 12,
+    marginBottom: 0,
+    marginTop: 6,
     borderRadius: 12,
     elevation: 2, // For Android shadow
   },

@@ -9,7 +9,7 @@
 import { Dimensions } from 'react-native';
 const screenWidth = Dimensions.get('window').width;
 const isLargeScreen = screenWidth >= 600;  // When screen is large, use two columns
-const cardWidth = isLargeScreen ? (screenWidth / 2) - 32 : screenWidth - 32;
+const workingAreaWidth = isLargeScreen ? (screenWidth / 2) - 32 : screenWidth - 32;
 
 
 import { StyleSheet } from 'react-native';
@@ -115,7 +115,7 @@ export const styles = StyleSheet.create({
     marginVertical: 8,
   },
   input: {
-    marginBottom: 16,
+    marginBottom: 0,
   },
   button: {
     paddingVertical: 12,

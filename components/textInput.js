@@ -25,13 +25,19 @@ export default function CustomTextInput({
       mode = "outlined"
       outlineStyle={[
         {borderRadius:12},
-        {borderColor : error ? theme.colors.error : theme.colors.outline}
+        {borderColor : error ? theme.colors.error : theme.colors.outline},
+        // {marginTop:0},
+        // {padding:0}
       ]}
       activeOutlineColor={error ? theme.colors.error : theme.colors.secondary}
       textColor={theme.colors.onSurface}
       style={[styles.input, 
-        { backgroundColor: theme.colors.surface, 
-        borderColor: error ? theme.colors.error : theme.colors.secondary }, style]}
+        { 
+        backgroundColor: theme.colors.surface, 
+        borderColor: error ? theme.colors.error : theme.colors.secondary }, 
+        {marginTop:0},
+        // {padding:0}
+        ]}
       theme={{ colors: { primary: theme.colors.secondary } }}
     />
   );
@@ -41,7 +47,9 @@ export default function CustomTextInput({
 
 const styles = StyleSheet.create({
   input: {
-    marginBottom: 16,
+    marginTop:0,
+    paddingTop:0,
+    marginBottom: 0,
     borderRadius: 8
   },
 });

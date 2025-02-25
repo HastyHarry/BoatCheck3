@@ -29,7 +29,13 @@ import Step2 from './screens/sailboat/step2';
 
 const screenWidth = Dimensions.get('window').width;
 const isLargeScreen = screenWidth >= 600;
-const cardWidth = isLargeScreen ? screenWidth / 2 - 32 : screenWidth - 32;
+const borderMargin = 32
+const cardWidth = isLargeScreen 
+  ? screenWidth / 2 - borderMargin 
+  : screenWidth - borderMargin;
+const workingAreaWidth = isLargeScreen 
+? screenWidth / 2 - borderMargin 
+: screenWidth - borderMargin;
 
 // import activeTheme from './themes'
 
@@ -43,6 +49,7 @@ export default function App() {
   const [inputData, setInput] = useState({ boatName: "" })
   const [isLoading, setIsLoading] = useState(true); // Initialize loading state
 
+  console.log("screenWidth",{screenWidth,isLargeScreen, workingAreaWidth })
 
   useEffect(() => {
     const loadData = async () => {
@@ -59,6 +66,8 @@ export default function App() {
 
   const theme = colorScheme === "dark" ? { ...darkCustomTheme() } : { ...lightCustomTheme() }
   theme.cardWidth = cardWidth
+  theme.workingAreaWidth = workingAreaWidth
+  theme.screenWidth = screenWidth
 
   const HomeScreenWithTheme = (props) => <HomeScreen {...props} theme={theme} />;
   const InspectScreenWithTheme = (props) => <InspectScreen {...props} theme={theme} />;
