@@ -3,6 +3,8 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { View, useColorScheme, Dimensions } from 'react-native';
 import { MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
 
+import { GlobalProvider } from './utils/appContext';
+
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import { useFonts, Roboto_400Regular, Roboto_500Medium } from '@expo-google-fonts/roboto';
@@ -30,12 +32,12 @@ import Step2 from './screens/sailboat/step2';
 const screenWidth = Dimensions.get('window').width;
 const isLargeScreen = screenWidth >= 600;
 const borderMargin = 32
-const cardWidth = isLargeScreen 
-  ? screenWidth / 2 - borderMargin 
+const cardWidth = isLargeScreen
+  ? screenWidth / 2 - borderMargin
   : screenWidth - borderMargin;
-const workingAreaWidth = isLargeScreen 
-? screenWidth / 2 - borderMargin 
-: screenWidth - borderMargin;
+const workingAreaWidth = isLargeScreen
+  ? screenWidth / 2 - borderMargin
+  : screenWidth - borderMargin;
 
 // import activeTheme from './themes'
 
@@ -49,7 +51,7 @@ export default function App() {
   const [inputData, setInput] = useState({ boatName: "" })
   const [isLoading, setIsLoading] = useState(true); // Initialize loading state
 
-  console.log("screenWidth",{screenWidth,isLargeScreen, workingAreaWidth })
+  console.log("screenWidth", { screenWidth, isLargeScreen, workingAreaWidth })
 
   useEffect(() => {
     const loadData = async () => {
@@ -92,47 +94,51 @@ export default function App() {
   }
 
   return (
+
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PaperProvider theme={theme}>
-        {!isLoading ? (
-          <NavigationContainer>
-            <Stack.Navigator
-              screenOptions={{
-                headerStyle: { backgroundColor: theme.colors.secondary },
-                headerTintColor: theme.colors.onPrimary,
-                headerTitleAlign: 'center',
-              }}
-            >
-              <Stack.Screen
-                name="Home"
-                component={HomeScreenWithTheme}
-                options={{ title: "Boat Inspection" }}
-              />
-              <Stack.Screen name="SailboatCheck" component={InspectScreenWithTheme} options={{ title: "Check Sailboat" }} />
-              <Stack.Screen name="SailboatStep0" component={Step0WithTheme} options={{ title: "Table of Content" }} />
-              <Stack.Screen name="SailboatStep1" component={Step1WithTheme} options={{ title: "Sailboat Common Info" }} />
-              <Stack.Screen name="SailboatStep2" component={Step2WithTheme} options={{ title: "Sailboat Step 2" }} />
-              <Stack.Screen name="CatamaranCheck" component={InspectScreenWithTheme} options={{ title: "Check Catamaran" }} />
-              <Stack.Screen name="History" component={InspectScreenWithTheme} options={{ title: "Inspection History" }} />
-            </Stack.Navigator>
-          </NavigationContainer>)
-          : (<NavigationContainer>
-            <Stack.Navigator
-              screenOptions={{
-                headerShown: false,
-                tabBarStyle: { backgroundColor: theme.colors.secondaryContainer },
-                tabBarActiveTintColor: theme.colors.secondary,
-                tabBarInactiveTintColor: theme.colors.onSecondary,
-              }}>
-              <Stack.Screen
-                name="Loading"
-                component={LoadingScreenWithTheme}
-                options={{ title: "Loading" }} />
-            </Stack.Navigator>
-          </NavigationContainer>
-          )
-        }
+        <GlobalProvider>
+          {!isLoading ? (
+            <NavigationContainer>
+              <Stack.Navigator
+                screenOptions={{
+                  headerStyle: { backgroundColor: theme.colors.secondary },
+                  headerTintColor: theme.colors.onPrimary,
+                  headerTitleAlign: 'center',
+                }}
+              >
+                <Stack.Screen
+                  name="Home"
+                  component={HomeScreenWithTheme}
+                  options={{ title: "Boat Inspection" }}
+                />
+                <Stack.Screen name="SailboatCheck" component={InspectScreenWithTheme} options={{ title: "Check Sailboat" }} />
+                <Stack.Screen name="SailboatStep0" component={Step0WithTheme} options={{ title: "Table of Content" }} />
+                <Stack.Screen name="SailboatStep1" component={Step1WithTheme} options={{ title: "Sailboat Common Info" }} />
+                <Stack.Screen name="SailboatStep2" component={Step2WithTheme} options={{ title: "Sailboat Step 2" }} />
+                <Stack.Screen name="CatamaranCheck" component={InspectScreenWithTheme} options={{ title: "Check Catamaran" }} />
+                <Stack.Screen name="History" component={InspectScreenWithTheme} options={{ title: "Inspection History" }} />
+              </Stack.Navigator>
+            </NavigationContainer>)
+            : (<NavigationContainer>
+              <Stack.Navigator
+                screenOptions={{
+                  headerShown: false,
+                  tabBarStyle: { backgroundColor: theme.colors.secondaryContainer },
+                  tabBarActiveTintColor: theme.colors.secondary,
+                  tabBarInactiveTintColor: theme.colors.onSecondary,
+                }}>
+                <Stack.Screen
+                  name="Loading"
+                  component={LoadingScreenWithTheme}
+                  options={{ title: "Loading" }} />
+              </Stack.Navigator>
+            </NavigationContainer>
+            )
+          }
+        </GlobalProvider>
       </PaperProvider>
     </GestureHandlerRootView>
+
   )
 }
