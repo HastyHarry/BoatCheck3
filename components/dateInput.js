@@ -23,7 +23,9 @@ registerTranslation('en', {
     close: 'Close',
   });
 
-export default function DateInput({ label, value, onChange, error }) {
+export default function DateInput({ label, value, onChange, error, style = {} }) {
+  console.log('Date value', value)
+  const parsedValue = value ? new Date(value) : null;
   const theme = useTheme();
   const [visible, setVisible] = useState(false);
 
@@ -39,7 +41,7 @@ export default function DateInput({ label, value, onChange, error }) {
       >
         <TextInput
           label={label}
-          value={value ? value.toLocaleDateString() : ''}
+          value={parsedValue ? parsedValue.toLocaleDateString() : ''}
           editable={false}
           mode= "outlined"
         //   outlineColor={error ? theme.colors.error : theme.colors.outline}
@@ -52,7 +54,7 @@ export default function DateInput({ label, value, onChange, error }) {
           textColor={theme.colors.onSurface}
           placeholderTextColor={theme.colors.onSurfaceVariant}
           right={<TextInput.Icon icon="calendar" iconColor={theme.colors.primary} onPress={() => setVisible(true)} />}
-          style={[{ backgroundColor: theme.colors.surface }, {margin:0}]}
+          style={[{ backgroundColor: theme.colors.surface }, {margin:0}, style]}
         />
       </TouchableOpacity>
 

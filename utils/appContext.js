@@ -1,64 +1,53 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Create the context
-const GlobalContext = createContext();
-
-const actions = {
-  SET_STATE: 'SET_STATE',
-  UPDATE_FIELD: 'UPDATE_FIELD',
-  RESET: 'RESET',
-};
-
-// Initial state
-const initialState = {
-  name: '',
-  email: '',
-  error: false,
-  date: null,
-  count: 0,
-  // Add more fields as needed
-};
-
-// Define reducer
-const reducer = (state, action) => {
-  switch (action.type) {
-    case actions.SET_STATE:
-      return { ...state, ...action.payload };
-    case actions.UPDATE_FIELD:
-      return { ...state, [action.field]: action.payload };
-    case actions.RESET:
-      return initialState;
-    default:
-      return state;
-  }
-};
+export const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, setState] = useState({
+    checkboxObj: { value: false }, // Default values
+  });
 
-  // Generic update function
-  const updateField = (field, value) => {
-    dispatch({ type: actions.UPDATE_FIELD, field, payload: value });
+  // ✅ Load stored values on app startup
+  useEffect(() => {
+    const loadState = async () => {
+      try {
+        const storedState = await AsyncStorage.getItem('appState');
+        if (storedState) {
+          setState(JSON.parse(storedState)); // Restores saved state
+        }
+      } catch (error) {
+        console.error('Error loading state:', error);
+      }
+    };
+
+    loadState();
+  }, []);
+
+  // ✅ Save state to AsyncStorage whenever it changes
+  useEffect(() => {
+    console.log('Saving state:', state);
+    const saveState = async () => {
+      try {
+        await AsyncStorage.setItem('appState', JSON.stringify(state));
+      } catch (error) {
+        console.error('Error saving state:', error);
+      }
+    };
+
+    saveState();
+  }, [state]);
+
+  // ✅ Ensure `updateField` still works
+  const updateField = (key, value) => {
+    setState(prevState => ({
+      ...prevState,
+      [key]: value,
+    }));
   };
-  
-  
-  // For updating multiple fields
-  const updateMultiple = (updates) => {
-    dispatch({ type: actions.SET_STATE, payload: updates });
-  };
-  
-  // Reset everything
-  const resetState = () => dispatch({ type: actions.RESET });
 
   return (
-    <GlobalContext.Provider 
-      value={{
-        state,
-        updateField, // Generic function
-        updateMultiple,
-        resetState,
-      }}
-    >
+    <GlobalContext.Provider value={{ state, updateField }}>
       {children}
     </GlobalContext.Provider>
   );

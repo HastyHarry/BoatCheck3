@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, Alert, Image, Modal } from 'react-native';
-import { Card, Text, IconButton, Divider } from 'react-native-paper';
+import { Card, Text, IconButton } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 
 const gapBetweenImages = 8;
 const numColumns = 3;
@@ -75,18 +74,16 @@ export default function PhotoPicker({ title, onImagesSelected, theme, onValueCha
 
     return (
         <View>
-            <Divider></Divider>
-                <Text variant="titleLarge" style={[{
-                    fontSize: 18,
-                    fontWeight: 'light',
-                    alignItems: "flex-start",
-                    color: theme.colors.secondary,
-                    marginLeft: 16
-                }]}>
-                    {title}
-                </Text>
-            
-            <View style={[localStyles.centeredContainer, { marginLeft: marginLeft, marginBottom:8 }, { alignItems: 'center' }]}>
+            <Text variant="titleLarge" style={[{
+                fontSize: 16,
+                fontWeight: 'light',
+                alignItems: "flex-start",
+                color: theme.colors.onSurfaceVariant,
+                marginLeft: 16
+            }]}>
+                {title}
+            </Text>
+            <View style={[localStyles.centeredContainer, { marginLeft: marginLeft }, { alignItems: 'center' }]}>
                 <View style={[localStyles.gridContainer, { width: "100%" }]}>
                     {photos.map((photoUri, index) => (
                         <TouchableOpacity
@@ -120,9 +117,9 @@ export default function PhotoPicker({ title, onImagesSelected, theme, onValueCha
                 animationType="fade"
                 onRequestClose={closeModal}
             >
-                <View style={[localStyles.modalBackground, ]}>
+                <View style={localStyles.modalBackground}>
                     <TouchableOpacity style={localStyles.modalCloseArea} onPress={closeModal} />
-                    <View style={[localStyles.modalContent,{backgroundColor: theme.colors.secondary}]}>
+                    <View style={localStyles.modalContent}>
                         <Image source={{ uri: selectedPhoto }} style={localStyles.fullImage} resizeMode='cover' />
                         <IconButton
                             icon="close"

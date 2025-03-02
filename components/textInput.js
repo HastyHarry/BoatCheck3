@@ -33,10 +33,11 @@ export default function CustomTextInput({
       textColor={theme.colors.onSurface}
       style={[styles.input, 
         { 
-        backgroundColor: theme.colors.surface, 
-        borderColor: error ? theme.colors.error : theme.colors.secondary }, 
-        {marginTop:0},
-        // {padding:0}
+          backgroundColor: theme.colors.surface, 
+          borderColor: error ? theme.colors.error : theme.colors.secondary , 
+          marginTop:0
+        },
+        style
         ]}
       theme={{ colors: { primary: theme.colors.secondary } }}
     />
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
   input: {
     marginTop:0,
     paddingTop:0,
-    marginBottom: 0,
+    // marginBottom: 0,
     borderRadius: 8
   },
 });
