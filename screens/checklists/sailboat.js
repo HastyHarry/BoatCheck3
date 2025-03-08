@@ -1,54 +1,61 @@
-import React from 'react';
-import { Text, Button, Card, TextInput, Appbar } from 'react-native-paper';
-import { View } from 'react-native';
 
-import { useState, useEffect, useCallback } from 'react';
-import { handleSave } from '../../utils/context'
 
-export default function SailBoatChecklist({ theme, styles }) {
+const sheetStructure1 = {
+    items: [
+        {
+            type: 'textInput',
+            label: 'Name',
+            objectName: 'nameObj',
+            placeholder: 'Enter your name'
+        },
+        {
+            type: 'textInput',
+            label: 'BoatName',
+            objectName: 'boatNameObj',
+            placeholder: 'Enter Boat name'
+        },
+        {
+            type: 'textInputEmail',
+            label: 'Email',
+            objectName: 'emailObj',
+        },
+        {
+            type: 'counterInput',
+            label: 'Fenders qty?',
+            objectName: 'fendersObj',
+        },
+        {
+            type: 'counterInput',
+            label: 'captans qty?',
+            objectName: 'cptObj',
+        },
+        {
+            type: 'checkbox',
+            label: 'test checkbox',
+            objectName: 'checkboxObj',
+        },
+        {
+            type: 'dateInput',
+            label: 'Select Date',
+            objectName: 'dateObj',
+        },
+        {
+            type: 'photoPicker',
+            title: 'Internal Overview',
+            objectName: 'internalOverviewObj',
+        },
+        {
+            type: 'photoPicker',
+            title: 'Internal Damages',
+            objectName: 'internalDamagesObj',
+        }
+    ]
+}
 
-    const [selectedOption, setSelectedOption] = useState(null);
-    const [checklistScreen, setChecklistScreen] = useState(null);
-
-    const [inputData, setInputData] = useState({ boatName: "" })
-    console.log("input", inputData)
-
-    useEffect(() => {
-        handleSave('TestKey', inputData)
-        console.log('saving Data')
-    }, [inputData]);
-
-    return (
-        <View style={{ backgroundColor: theme.colors.background, flex: 1, justifyContent: 'auto', alignItems: 'auto' }}>
-            {/* <Appbar.Header>
-                <Appbar.BackAction onPress={() => handleOptionSelect(null)} />
-                <Appbar.Content title="SailBoat" />
-            </Appbar.Header> */}
-
-            <Card style={styles.card}>
-                <Card.Content>
-                    <TextInput
-                        label="Boat Name"
-                        value={inputData?.boatName}
-                        onChangeText={text => setInputData({ "boatName": text })}
-                        mode="outlined"
-                        style={styles.input}
-                    />
-                    <Button
-                        mode="contained"
-                        onPress={() => {
-                            console.log('Button Pressed')
-                            // handleSave("blahblah")
-                        }
-                        }
-                        style={styles.button}
-                        buttonColor={theme.colors.primaryContainer}
-                        textColor={theme.colors.primary}
-                    >
-                        Button
-                    </Button>
-                </Card.Content>
-            </Card>
-        </View>
-    )
+const tableOfContents = {
+    title: "Common Information",
+    subTitle: 'Boat Name, Year, Port, etc...',
+    onPress: () => navigation.navigate('SailboatStep1'),
+    theme: theme,
+    cardWidth: theme.cardWidth
 }

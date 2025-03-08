@@ -6,7 +6,12 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 export default function NaviTitle({ title, icon, onPress, theme, cardWidth }) {
   return (
     <TouchableOpacity onPress={onPress}>
-      <Card style={[styles.card, { width: cardWidth, backgroundColor: theme.colors.surfaceVariant }]}>
+      <Card style={[
+        styles.card, 
+        { 
+          // width: cardWidth, 
+          backgroundColor: theme.colors.surfaceVariant 
+        }]}>
         <Card.Content style={{ alignItems: 'center' }}>
           <MaterialCommunityIcons
             name={icon}
@@ -29,8 +34,9 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   card: {
     marginVertical: 8,
+    // marginHorizontal:4,
     borderRadius: 12,
-    padding: 16,
+    padding: 8,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,

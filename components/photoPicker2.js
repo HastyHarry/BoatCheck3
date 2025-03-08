@@ -80,7 +80,7 @@ export default function PhotoPicker({ title, onImagesSelected, theme, onValueCha
                     fontSize: 18,
                     fontWeight: 'light',
                     alignItems: "flex-start",
-                    color: theme.colors.secondary,
+                    color: theme.colors.primary,
                     marginLeft: 16
                 }]}>
                     {title}
