@@ -1,11 +1,6 @@
 import React from 'react';
 import { View, Dimensions } from 'react-native';
-import { Text } from 'react-native-paper';
-import { useColorScheme } from 'react-native';
-import { lightCustomTheme, darkCustomTheme } from '../styles';
 import NaviTitle from '../components/naviTitle'
-
-
 import { createStyles } from '../styles';
 
 export default function HomeScreen({ navigation, theme }) {
@@ -27,7 +22,7 @@ export default function HomeScreen({ navigation, theme }) {
         icon="sail-boat"
         onPress={() => navigation.navigate('SailboatStep0')}
         theme={theme}
-        cardWidth={cardWidth}
+        // cardWidth={cardWidth}
       />
       <NaviTitle
         title="Check Catamaran"

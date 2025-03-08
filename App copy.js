@@ -3,7 +3,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { View, useColorScheme, Dimensions } from 'react-native';
 import { MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
 
-import { GlobalProvider } from './utils/globalContext'
+import { GlobalProvider } from './utils/appContext';
 
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
@@ -18,7 +18,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
-// import { clearAllData, handleSave, handleLoadAll } from './utils/context'
+import { clearAllData, handleSave, handleLoadAll } from './utils/context'
 import { lightCustomTheme, darkCustomTheme } from './styles'
 
 import HomeScreen from './screens/homeScreen'
@@ -43,26 +43,26 @@ const workingAreaWidth = isLargeScreen
 
 SplashScreen.preventAutoHideAsync();
 
-// const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App() {
 
-  // const [dataBuffer, setDataBuffer] = useState([]);
-  // const [inputData, setInput] = useState({ boatName: "" })
-  const [isLoading, setIsLoading] = useState(false); // Initialize loading state
+  const [dataBuffer, setDataBuffer] = useState([]);
+  const [inputData, setInput] = useState({ boatName: "" })
+  const [isLoading, setIsLoading] = useState(true); // Initialize loading state
 
   console.log("screenWidth", { screenWidth, isLargeScreen, workingAreaWidth })
-  
-  // useEffect(() => {
-  //   const loadData = async () => {
-  //     await handleLoadAll(setDataBuffer)
-  //     console.log('dataBuffer', dataBuffer)
-  //     setInput(dataBuffer[dataBuffer.length])
-  //     setIsLoading(false);
-  //   }
-  //   loadData();
-  //   console.log('APP inputData', inputData)
-  // }, []); // Empty dependency array means this runs once on mount
+
+  useEffect(() => {
+    const loadData = async () => {
+      await handleLoadAll(setDataBuffer)
+      console.log('dataBuffer', dataBuffer)
+      setInput(dataBuffer[dataBuffer.length])
+      setIsLoading(false);
+    }
+    loadData();
+    console.log('APP inputData', inputData)
+  }, []); // Empty dependency array means this runs once on mount
 
   const colorScheme = useColorScheme()
   // const colorScheme = "dark"

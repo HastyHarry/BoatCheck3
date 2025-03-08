@@ -1,20 +1,22 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Создание контекста
 export const GlobalContext = createContext();
 
+// Провайдер контекста
 export const GlobalProvider = ({ children }) => {
   const [state, setState] = useState({
-    checkboxObj: { value: false }, // Default values
+    checkboxObj: { value: false }, // Начальные значения
   });
 
-  // ✅ Load stored values on app startup
+  // Загрузка сохраненных значений при запуске приложения
   useEffect(() => {
     const loadState = async () => {
       try {
         const storedState = await AsyncStorage.getItem('appState');
         if (storedState) {
-          setState(JSON.parse(storedState)); // Restores saved state
+          setState(JSON.parse(storedState)); // Восстановление сохраненного состояния
         }
       } catch (error) {
         console.error('Error loading state:', error);
@@ -24,9 +26,8 @@ export const GlobalProvider = ({ children }) => {
     loadState();
   }, []);
 
-  // ✅ Save state to AsyncStorage whenever it changes
+  // Сохранение состояния в AsyncStorage при каждом изменении
   useEffect(() => {
-    console.log('Saving state:', state);
     const saveState = async () => {
       try {
         await AsyncStorage.setItem('appState', JSON.stringify(state));
@@ -38,7 +39,7 @@ export const GlobalProvider = ({ children }) => {
     saveState();
   }, [state]);
 
-  // ✅ Ensure `updateField` still works
+  // Функция для обновления поля в состоянии
   const updateField = (key, value) => {
     setState(prevState => ({
       ...prevState,
@@ -46,12 +47,22 @@ export const GlobalProvider = ({ children }) => {
     }));
   };
 
+  // Функция для очистки всех данных
+  const clearAllData = async () => {
+    try {
+      await AsyncStorage.clear();
+      setState({});
+    } catch (error) {
+      console.error('Error clearing data:', error);
+    }
+  };
+
   return (
-    <GlobalContext.Provider value={{ state, updateField }}>
+    <GlobalContext.Provider value={{ state, updateField, clearAllData }}>
       {children}
     </GlobalContext.Provider>
   );
 };
 
-// Custom hook for using the context
+// Пользовательский хук для использования контекста
 export const useGlobalState = () => useContext(GlobalContext);

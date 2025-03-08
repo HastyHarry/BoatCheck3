@@ -10,7 +10,8 @@ import NaviCard from '../../components/naviCard';
 import CounterCard from '../../components/counterCard'
 import PhotoPicker from '../../components/photoPicker2';
 
-import { useGlobalState } from '../../utils/appContext';
+import { useGlobalState } from '../../utils/globalContext';
+// import { useGlobalState } from '../../utils/appContext';
 
 const parseSheet = ({ sheet, theme, source, updateField, checkEmail }) => {
     const { items } = sheet;
@@ -85,8 +86,7 @@ export default function Step1({ navigation, theme }) {
     const [count, setCount] = useState(0);
 
     let source = useGlobalState();
-    const { updateField, updateMultiple } = source
-    const { nameObj, emailObj, fendersObj, dateObj, checkboxObj, photosObj } = source.state
+    const { updateField } = source
 
     const checkEmail = (string) => !(string.includes("@") && string.includes("."))
 
