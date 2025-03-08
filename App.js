@@ -21,6 +21,9 @@ const Stack = createStackNavigator();
 // import { clearAllData, handleSave, handleLoadAll } from './utils/context'
 import { lightCustomTheme, darkCustomTheme } from './styles'
 
+import config from './utils/config';
+import assignIds from './utils/configParser';
+
 import HomeScreen from './screens/homeScreen'
 import InspectScreen from './screens/inspectScreen'
 import LoadingScreen from './screens/loading'
@@ -78,6 +81,11 @@ export default function App() {
   const Step0WithTheme = (props) => <Step0 {...props} theme={theme} />
   const Step1WithTheme = (props) => <Step1 {...props} theme={theme} />;
   const Step2WithTheme = (props) => <Step2 {...props} theme={theme} />;
+
+  console.log('config', config)
+  const screensWithIds = assignIds(config.items);
+
+  console.log('screensWithIds', JSON.stringify(screensWithIds))
 
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,

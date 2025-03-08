@@ -8,6 +8,21 @@ import PhotoPicker from '../components/photoPicker2';
 import NaviTableOfContent from '../components/naviTableOfContent';
 import { useGlobalState } from './globalContext';
 
+const assignIds = (items, parentId = '', level = 0) => {
+    return items.map((item, index) => {
+      const id = `${parentId}${item.title.replace(/\s+/g, '')}${index}`;
+      const newItem = { ...item, id };
+  
+      if (item.items) {
+        newItem.items = assignIds(item.items, `${id}_`, level + 1);
+      }
+  
+      return newItem;
+    });
+  };
+  
+  export default assignIds;
+
 export const parseScreen = (screenConfig, theme, navigation) => {
   const { state, updateField } = useGlobalState();
 
