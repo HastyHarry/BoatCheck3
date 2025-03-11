@@ -6,22 +6,21 @@ import CheckboxItem from '../components/checkboxItem';
 import CounterCard from '../components/counterCard';
 import PhotoPicker from '../components/photoPicker2';
 import NaviTableOfContent from '../components/naviTableOfContent';
+import NaviTitle from '../components/naviTitle'
 import { useGlobalState } from './globalContext';
 
-const assignIds = (items, parentId = '', level = 0) => {
-    return items.map((item, index) => {
-      const id = `${parentId}${item.title.replace(/\s+/g, '')}${index}`;
-      const newItem = { ...item, id };
-  
-      if (item.items) {
-        newItem.items = assignIds(item.items, `${id}_`, level + 1);
-      }
-  
-      return newItem;
-    });
-  };
-  
-  export default assignIds;
+export const assignIds = (items, parentId = '', level = 0) => {
+  return items.map((item, index) => {
+    const id = `${parentId}${item.title.replace(/\s+/g, '')}${index}`;
+    const newItem = { ...item, id };
+
+    if (item.items) {
+      newItem.items = assignIds(item.items, `${id}_`, level + 1);
+    }
+
+    return newItem;
+  });
+};
 
 export const parseScreen = (screenConfig, theme, navigation) => {
   const { state, updateField } = useGlobalState();
@@ -30,37 +29,29 @@ export const parseScreen = (screenConfig, theme, navigation) => {
 
   return screenConfig.items.map((item, index) => {
     switch (item.type) {
-      case 'checklist':
-        return (
-          <Button
-            key={index}
-            title={item.label}
-            onPress={() => navigation.navigate(item.navigationTarget)}
-          />
-        );
-      case 'history':
-        return (
-          <Button
-            key={index}
-            title={item.label}
-            onPress={() => navigation.navigate(item.navigationTarget)}
-          />
-        );
       case 'section':
         return (
           <NaviTableOfContent
             key={index}
-            title={item.label}
-            onPress={() => navigation.navigate(item.navigationTarget)}
+            title={item.title}
+            onPress={() => navigation.navigate(item.id)}
             theme={theme}
             cardWidth={theme.cardWidth}
           />
+        );
+      case 'mainSection':
+        return (
+          <NaviTitle
+            title={item.title}
+            icon={item.icon}
+            onPress={() => navigation.navigate(item.id)}
+            theme={theme}></NaviTitle>
         );
       case 'textInput':
         return (
           <CustomTextInput
             key={index}
-            label={item.label}
+            label={item.title}
             value={state[item.objectName]?.value}
             onChangeText={val => updateField(item.objectName, { value: val })}
             theme={theme}
@@ -72,7 +63,7 @@ export const parseScreen = (screenConfig, theme, navigation) => {
         return (
           <CustomTextInput
             key={index}
-            label={item.label}
+            label={item.title}
             value={state[item.objectName]?.value}
             onChangeText={val => updateField(item.objectName, { value: val, error: checkEmail(val) })}
             theme={theme}
@@ -85,7 +76,7 @@ export const parseScreen = (screenConfig, theme, navigation) => {
         return (
           <CounterCard
             key={index}
-            title={item.label}
+            title={item.title}
             theme={theme}
             cardWidth={theme.cardWidth}
             initialCount={1}
@@ -98,7 +89,7 @@ export const parseScreen = (screenConfig, theme, navigation) => {
         return (
           <CheckboxItem
             key={index}
-            label={item.label}
+            label={item.title}
             theme={theme}
             checked={state[item.objectName]?.value || false}
             onValueChange={val => updateField(item.objectName, { value: val })}
