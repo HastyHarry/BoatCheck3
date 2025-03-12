@@ -12,6 +12,7 @@ export default config = {
                         {
                             "type": "section",
                             "title": "Sailboat Common Info",
+                            'subTitle': "Boat name, company, etc.",
                             "items": [
                                 {
                                     "type": "textInput",
@@ -70,21 +71,31 @@ export default config = {
                         {
                             "type": "section",
                             "title": "Internal Equipment",
+                            'subTitle': "Drawers, furniture, etc.",
                             "items": [
-                                {
-                                    "title": "Sailboat Step 2",
-                                    "items": [
-
-                                    ]
-                                }
+                               
                             ]
                         },
                         {
                             "type": "section",
-                            "title": "Sails",
+                            "title": "Engine compartment",
+                            'subTitle': "What is not clear?!",
+                            "items": [
+                            
+                            ]
+                        },
+                        {
+                            "type": "section",
+                            "title": "Sails state",
                             "items": [
 
                             ]
+                        },
+                        {
+                            "type": "saveButton",
+                            // 'icon': 'history',
+                            "title": "Submit",
+                            "items": []
                         }
                     ]
                 },
@@ -99,7 +110,8 @@ export default config = {
                     'icon': 'history',
                     "title": "History2",
                     "items": []
-                }
+                },
+
             ]
         }
     ]

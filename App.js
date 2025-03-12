@@ -70,7 +70,7 @@ export default function App() {
 
   // console.log("screensWithIds", JSON.stringify(screensWithIds))
 
-  
+
 
   // const renderScreens = (screens) => {
   //   return screens.map((screen, index) => {
@@ -102,8 +102,9 @@ export default function App() {
       <PaperProvider theme={theme}>
         <GlobalProvider>
           {!isLoading ? (
-            <NavigationContainer>
-              {/* <Stack.Navigator
+            // <View styles={[{backgroundColor: theme.colors.background}]}>
+              <NavigationContainer>
+                {/* <Stack.Navigator
                 screenOptions={{
                   headerStyle: { backgroundColor: theme.colors.surfaceVariant },
                   headerTintColor: theme.colors.onSurfaceVariant,
@@ -111,8 +112,10 @@ export default function App() {
                 }}
               > */}
                 <DynamicNavigator theme={theme}></DynamicNavigator>
-              {/* </Stack.Navigator> */}
-            </NavigationContainer>)
+                {/* </Stack.Navigator> */}
+              </NavigationContainer>
+            // </View>
+            )
             : (<NavigationContainer>
               <Stack.Navigator
                 screenOptions={{
@@ -128,6 +131,7 @@ export default function App() {
               </Stack.Navigator>
             </NavigationContainer>
             )
+
           }
         </GlobalProvider>
       </PaperProvider>

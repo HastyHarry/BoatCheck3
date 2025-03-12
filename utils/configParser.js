@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Button, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { Button } from 'react-native-paper';
 import CustomTextInput from '../components/textInput';
 import DateInput from '../components/dateInput';
 import CheckboxItem from '../components/checkboxItem';
@@ -28,20 +29,38 @@ export const parseScreen = (screenConfig, theme, navigation) => {
   const checkEmail = (string) => !(string.includes("@") && string.includes("."));
 
   return screenConfig.items.map((item, index) => {
+    // console.log('item/index', {item,index});
     switch (item.type) {
+      case "saveButton":
+        return (
+          <Button
+          key={item.id}
+            mode="contained"
+            onPress={() => console.log('Save button pressed')}
+            style={[localStyles.gap, {borderRadius:12, marginTop: 8}]}
+            title={item.title}
+            textColor={theme.colors.onPrimary}
+            borderColor={theme.colors.primary}
+            outlineStyle={[
+              ]}
+          > {item.title}
+          </Button>
+        );
       case 'section':
         return (
           <NaviTableOfContent
-            key={index}
+            key={item.id}
             title={item.title}
+            subTitle={item.subTitle || ''}
             onPress={() => navigation.navigate(item.id)}
             theme={theme}
-            cardWidth={theme.cardWidth}
+            // cardWidth={theme.cardWidth}
           />
         );
       case 'mainSection':
         return (
           <NaviTitle
+            key={item.id}
             title={item.title}
             icon={item.icon}
             onPress={() => navigation.navigate(item.id)}
@@ -50,7 +69,7 @@ export const parseScreen = (screenConfig, theme, navigation) => {
       case 'textInput':
         return (
           <CustomTextInput
-            key={index}
+          key={item.id}
             label={item.title}
             value={state[item.objectName]?.value}
             onChangeText={val => updateField(item.objectName, { value: val })}
@@ -62,7 +81,7 @@ export const parseScreen = (screenConfig, theme, navigation) => {
       case 'textInputEmail':
         return (
           <CustomTextInput
-            key={index}
+          key={item.id}
             label={item.title}
             value={state[item.objectName]?.value}
             onChangeText={val => updateField(item.objectName, { value: val, error: checkEmail(val) })}
@@ -75,7 +94,7 @@ export const parseScreen = (screenConfig, theme, navigation) => {
       case 'counterInput':
         return (
           <CounterCard
-            key={index}
+          key={item.id}
             title={item.title}
             theme={theme}
             cardWidth={theme.cardWidth}
@@ -88,7 +107,7 @@ export const parseScreen = (screenConfig, theme, navigation) => {
       case 'checkbox':
         return (
           <CheckboxItem
-            key={index}
+          key={item.id}
             label={item.title}
             theme={theme}
             checked={state[item.objectName]?.value || false}
@@ -99,7 +118,7 @@ export const parseScreen = (screenConfig, theme, navigation) => {
       case 'dateInput':
         return (
           <DateInput
-            key={index}
+          key={item.id}
             label={item.label}
             value={state[item.objectName]?.value}
             onChange={val => updateField(item.objectName, { value: val })}
@@ -109,7 +128,7 @@ export const parseScreen = (screenConfig, theme, navigation) => {
       case 'photoPicker':
         return (
           <PhotoPicker
-            key={index}
+          key={item.id}
             title={item.title}
             theme={theme}
             onValueChange={(updatedPhotos) => updateField(item.objectName, { value: updatedPhotos })}
@@ -118,7 +137,7 @@ export const parseScreen = (screenConfig, theme, navigation) => {
           />
         );
       default:
-        return <Text key={index} style={localStyles.gap}>Unknown item type</Text>;
+        return <Text key={item.id} style={localStyles.gap}>Unknown item type</Text>;
     }
   });
 };
