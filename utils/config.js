@@ -1,118 +1,42 @@
-export default config = {
-    "title": "Main",
-    "items": [
-        {
-            "title": "",
-            "items": [
-                {   
-                    "type": "mainSection",
-                    'icon': 'sail-boat',
-                    "title": "Sailboat Checklist",
-                    "items": [
-                        {
-                            "type": "section",
-                            "title": "Sailboat Common Info",
-                            'subTitle': "Boat name, company, etc.",
-                            "items": [
-                                {
-                                    "type": "textInput",
-                                    "title": "Name",
-                                    "objectName": "nameObj",
-                                    "placeholder": "Enter your name"
-                                },
-                                {
-                                    "type": "textInput",
-                                    "title": "BoatName",
-                                    "objectName": "boatNameObj",
-                                    "placeholder": "Enter Boat name"
-                                },
-                                {
-                                    "type": "textInputEmail",
-                                    "title": "Email",
-                                    "objectName": "emailObj"
-                                },
-                                {
-                                    "type": "counterInput",
-                                    "title": "Fenders qty?",
-                                    "objectName": "fendersObj"
-                                },
-                                {
-                                    "type": "counterInput",
-                                    "title": "Dumbasses on board?",
-                                    "objectName": "dumbassesObj"
-                                },
-                                {
-                                    "type": "counterInput",
-                                    "title": "Captains qty?",
-                                    "objectName": "cptObj"
-                                },
-                                {
-                                    "type": "checkbox",
-                                    "title": "Test checkbox",
-                                    "objectName": "checkboxObj"
-                                },
-                                {
-                                    "type": "dateInput",
-                                    "title": "Select Date",
-                                    "objectName": "dateObj"
-                                },
-                                {
-                                    "type": "photoPicker",
-                                    "title": "Internal Overview",
-                                    "objectName": "internalOverviewObj"
-                                },
-                                {
-                                    "type": "photoPicker",
-                                    "title": "Internal Damages",
-                                    "objectName": "internalDamagesObj"
-                                }
-                            ]
-                        },
-                        {
-                            "type": "section",
-                            "title": "Internal Equipment",
-                            'subTitle': "Drawers, furniture, etc.",
-                            "items": [
-                               
-                            ]
-                        },
-                        {
-                            "type": "section",
-                            "title": "Engine compartment",
-                            'subTitle': "What is not clear?!",
-                            "items": [
-                            
-                            ]
-                        },
-                        {
-                            "type": "section",
-                            "title": "Sails state",
-                            "items": [
+import { config as sailboatConfig } from './checklists/sailboat'
 
-                            ]
-                        },
-                        {
-                            "type": "saveButton",
-                            // 'icon': 'history',
-                            "title": "Submit",
-                            "items": []
-                        }
-                    ]
-                },
-                {
-                    "type": "mainSection",
-                    'icon': 'history',
-                    "title": "History",
-                    "items": []
-                },
-                {
-                    "type": "mainSection",
-                    'icon': 'history',
-                    "title": "History2",
-                    "items": []
-                },
+export const config = () => {
 
-            ]
-        }
-    ]
+    const saveButton = {
+        "type": "saveButton",
+        // 'icon': 'history',
+        "title": "Submit",
+        "items": []
+    }
+    sailboatConfig.items.push(saveButton);
+
+    const mainConf = {
+        "title": "Main",
+        "items": [
+            {
+                "title": "",
+                "items": [
+                    sailboatConfig,
+                    {
+                        "type": "mainSection",
+                        'icon': 'history',
+                        "title": "History",
+                        "items": [
+                            {
+                                "type": "historyScreen",
+                                "title": "History",
+                                "items": []
+                            }
+                        ]
+                    },
+                ]
+            }
+        ]
+    }
+
+    return mainConf
+
 }
+
+
+

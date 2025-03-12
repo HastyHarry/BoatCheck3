@@ -8,6 +8,7 @@ import CounterCard from '../components/counterCard';
 import PhotoPicker from '../components/photoPicker2';
 import NaviTableOfContent from '../components/naviTableOfContent';
 import NaviTitle from '../components/naviTitle'
+import History from '../components/history';
 import { useGlobalState } from './globalContext';
 
 export const assignIds = (items, parentId = '', level = 0) => {
@@ -24,7 +25,7 @@ export const assignIds = (items, parentId = '', level = 0) => {
 };
 
 export const parseScreen = (screenConfig, theme, navigation) => {
-  const { state, updateField } = useGlobalState();
+  const { state, updateField, startNewInspection, saveInspection } = useGlobalState();
 
   const checkEmail = (string) => !(string.includes("@") && string.includes("."));
 
@@ -34,9 +35,13 @@ export const parseScreen = (screenConfig, theme, navigation) => {
       case "saveButton":
         return (
           <Button
-          key={item.id}
+            key={item.id}
             mode="contained"
-            onPress={() => console.log('Save button pressed')}
+            onPress={() => {
+              console.log('Save button pressed')
+              saveInspection()
+              navigation.navigate('0')
+            }}
             style={[localStyles.gap, {borderRadius:12, marginTop: 8}]}
             title={item.title}
             textColor={theme.colors.onPrimary}
@@ -128,7 +133,7 @@ export const parseScreen = (screenConfig, theme, navigation) => {
       case 'photoPicker':
         return (
           <PhotoPicker
-          key={item.id}
+            key={item.id}
             title={item.title}
             theme={theme}
             onValueChange={(updatedPhotos) => updateField(item.objectName, { value: updatedPhotos })}
@@ -136,6 +141,9 @@ export const parseScreen = (screenConfig, theme, navigation) => {
             style={localStyles.gap}
           />
         );
+      case 'historyScreen':
+        return (
+          <History theme={theme}></History>);
       default:
         return <Text key={item.id} style={localStyles.gap}>Unknown item type</Text>;
     }

@@ -18,14 +18,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import DynamicNavigator from './utils/dynamicNavi';
 
+
 const Stack = createStackNavigator();
 
 import { lightCustomTheme, darkCustomTheme } from './styles'
 
-
-import config from './utils/config';
-// import assignIds from './utils/assignIds';
-import { parseScreen, assignIds } from './utils/configParser';
 
 const screenWidth = Dimensions.get('window').width;
 const isLargeScreen = screenWidth >= 600;
@@ -40,9 +37,11 @@ const workingAreaWidth = isLargeScreen
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
+  
   const [isLoading, setIsLoading] = useState(false); // Initialize loading state
 
-  console.log("screenWidth", { screenWidth, isLargeScreen, workingAreaWidth })
+  // console.log("screenWidth", { screenWidth, isLargeScreen, workingAreaWidth })
+
 
   const colorScheme = useColorScheme()
   const theme = colorScheme === "dark" ? { ...darkCustomTheme() } : { ...lightCustomTheme() }
@@ -64,57 +63,16 @@ export default function App() {
   if (!fontsLoaded) {
     return null; // Or return a loading component
   }
-  // console.log("config.items", config.items)
 
-  // const screensWithIds = assignIds(config.items);
-
-  // console.log("screensWithIds", JSON.stringify(screensWithIds))
-
-
-
-  // const renderScreens = (screens) => {
-  //   return screens.map((screen, index) => {
-  //     const Component = ({ navigation }) => (
-  //       <ScrollView>
-  //         <View style={{ padding: 16 }}>
-  //           {parseScreen(screen, theme, navigation)}
-  //         </View>
-  //       </ScrollView>
-  //     );
-
-  //     return (
-  //       <Stack.Screen
-  //         key={index}
-  //         name={screen.id}
-  //         component={Component}
-  //         options={{ title: screen.title }}
-  //       >
-  //         {screen.items && renderScreens(screen.items)}
-  //       </Stack.Screen>
-  //     );
-  //   });
-  // };
-
-  // console.log('test screens:', (x) => <DynamicNavigator theme={theme}></DynamicNavigator>)
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PaperProvider theme={theme}>
         <GlobalProvider>
           {!isLoading ? (
-            // <View styles={[{backgroundColor: theme.colors.background}]}>
               <NavigationContainer>
-                {/* <Stack.Navigator
-                screenOptions={{
-                  headerStyle: { backgroundColor: theme.colors.surfaceVariant },
-                  headerTintColor: theme.colors.onSurfaceVariant,
-                  headerTitleAlign: 'center',
-                }}
-              > */}
                 <DynamicNavigator theme={theme}></DynamicNavigator>
-                {/* </Stack.Navigator> */}
               </NavigationContainer>
-            // </View>
             )
             : (<NavigationContainer>
               <Stack.Navigator

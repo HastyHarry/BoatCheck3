@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ScrollView, View } from 'react-native';
 import { parseScreen, assignIds } from './configParser';
-import config from './config';
+import {config} from './config';
 // import { createStyles } from '../styles';
 import { StyleSheet } from 'react-native';
 
@@ -10,7 +10,11 @@ import { StyleSheet } from 'react-native';
 const Stack = createStackNavigator();
 
 const DynamicNavigator = ({ theme }) => {
-    const screensWithIds = assignIds(config.items);
+
+    const mainConfig = config()
+    console.log('mainConfig',JSON.stringify(mainConfig))
+
+    const screensWithIds = assignIds(mainConfig.items);
 
     const renderScreens = (screens) => {
         return screens.flatMap((screen, index) => {
