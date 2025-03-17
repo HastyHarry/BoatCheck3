@@ -1,22 +1,30 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Создание контекста
 export const GlobalContext = createContext();
 
-// Провайдер контекста
 export const GlobalProvider = ({ children }) => {
+  // Текущее состояние инспекции
   const [state, setState] = useState({
-    checkboxObj: { value: false }, // Начальные значения
+    // checkboxObj: { value: false },
+    // Добавим метаданные для текущей инспекции
+    metadata: {
+      startTime: null,
+      name: '',
+      isCompleted: false
+    }
   });
+  
+  // Список сохраненных инспекций
+  const [savedInspections, setSavedInspections] = useState([]);
 
-  // Загрузка сохраненных значений при запуске приложения
+  // Загрузка текущего состояния
   useEffect(() => {
     const loadState = async () => {
       try {
         const storedState = await AsyncStorage.getItem('appState');
         if (storedState) {
-          setState(JSON.parse(storedState)); // Восстановление сохраненного состояния
+          setState(JSON.parse(storedState));
         }
       } catch (error) {
         console.error('Error loading state:', error);
@@ -26,7 +34,23 @@ export const GlobalProvider = ({ children }) => {
     loadState();
   }, []);
 
-  // Сохранение состояния в AsyncStorage при каждом изменении
+  // Загрузка списка сохраненных инспекций
+  useEffect(() => {
+    const loadSavedInspections = async () => {
+      try {
+        const inspectionsData = await AsyncStorage.getItem('savedInspections');
+        if (inspectionsData) {
+          setSavedInspections(JSON.parse(inspectionsData));
+        }
+      } catch (error) {
+        console.error('Error loading saved inspections:', error);
+      }
+    };
+
+    loadSavedInspections();
+  }, []);
+
+  // Сохранение текущего состояния
   useEffect(() => {
     const saveState = async () => {
       try {
@@ -39,7 +63,7 @@ export const GlobalProvider = ({ children }) => {
     saveState();
   }, [state]);
 
-  // Функция для обновления поля в состоянии
+  // Обновление поля в состоянии
   const updateField = (key, value) => {
     setState(prevState => ({
       ...prevState,
@@ -47,22 +71,111 @@ export const GlobalProvider = ({ children }) => {
     }));
   };
 
-  // Функция для очистки всех данных
+  // Начать новую инспекцию
+  const startNewInspection = (name = '') => {
+    setState({
+      // checkboxObj: { value: false },
+      metadata: {
+        startTime: new Date().toISOString(),
+        name: name,
+        isCompleted: false
+      }
+    });
+  };
+
+  // Сохранить завершенную инспекцию
+  const saveInspection = async () => {
+    try {
+      // Создаем копию текущего состояния с обновленными метаданными
+      const completedInspection = {
+        ...state,
+        metadata: {
+          ...state.metadata,
+          isCompleted: true,
+          completionTime: new Date().toISOString()
+        },
+        id: Date.now().toString() // Уникальный идентификатор для инспекции
+      };
+      
+      // Добавляем в список сохраненных инспекций
+      const updatedInspections = [...savedInspections, completedInspection];
+      await AsyncStorage.setItem('savedInspections', JSON.stringify(updatedInspections));
+      setSavedInspections(updatedInspections);
+      
+      // Очищаем текущее состояние для новой инспекции
+      startNewInspection();
+      
+      return true; // Возвращаем успешный результат
+    } catch (error) {
+      console.error('Error saving inspection:', error);
+      return false; // Возвращаем ошибку
+    }
+  };
+  
+  // Получить список сохраненных инспекций
+  const getSavedInspections = () => {
+    return savedInspections;
+  };
+  
+  // Загрузить сохраненную инспекцию в текущее состояние (для просмотра)
+  const loadInspection = (inspectionId) => {
+    const inspection = savedInspections.find(insp => insp.id === inspectionId);
+
+    console.log('Loaded inspection:', {inspection,inspectionId});
+
+    if (inspection) {
+      setState(inspection);
+      return true;
+    }
+    return false;
+  };
+
+  // Удалить сохраненную инспекцию
+  const deleteInspection = async (inspectionId) => {
+    try {
+      const updatedInspections = savedInspections.filter(insp => insp.id !== inspectionId);
+      await AsyncStorage.setItem('savedInspections', JSON.stringify(updatedInspections));
+      setSavedInspections(updatedInspections);
+      return true;
+    } catch (error) {
+      console.error('Error deleting inspection:', error);
+      return false;
+    }
+  };
+
+  // Очистка всех данных
   const clearAllData = async () => {
     try {
       await AsyncStorage.clear();
-      setState({});
+      setState({
+        checkboxObj: { value: false },
+        metadata: {
+          startTime: null,
+          name: '',
+          isCompleted: false
+        }
+      });
+      setSavedInspections([]);
     } catch (error) {
       console.error('Error clearing data:', error);
     }
   };
 
   return (
-    <GlobalContext.Provider value={{ state, updateField, clearAllData }}>
+    <GlobalContext.Provider value={{ 
+      state, 
+      updateField, 
+      clearAllData,
+      startNewInspection,
+      saveInspection,
+      getSavedInspections,
+      loadInspection,
+      deleteInspection,
+      savedInspections
+    }}>
       {children}
     </GlobalContext.Provider>
   );
 };
 
-// Пользовательский хук для использования контекста
 export const useGlobalState = () => useContext(GlobalContext);

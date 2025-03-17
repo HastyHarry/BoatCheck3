@@ -25,7 +25,8 @@ registerTranslation('en', {
 
 export default function DateInput({ label, value, onChange, error, style = {} }) {
   console.log('Date value', value)
-  const parsedValue = value ? new Date(value) : null;
+  // value = new Date()
+  const parsedValue = value ? new Date(value) : value;
   const theme = useTheme();
   const [visible, setVisible] = useState(false);
 
@@ -54,7 +55,7 @@ export default function DateInput({ label, value, onChange, error, style = {} })
           textColor={theme.colors.onSurface}
           placeholderTextColor={theme.colors.onSurfaceVariant}
           right={<TextInput.Icon icon="calendar" iconColor={theme.colors.primary} onPress={() => setVisible(true)} />}
-          style={[{ backgroundColor: theme.colors.surface }, {margin:0}, style]}
+          style={[{ backgroundColor: theme.colors.surface }, {marginTop:8}, style]}
         />
       </TouchableOpacity>
 

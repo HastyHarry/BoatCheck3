@@ -154,7 +154,7 @@ const localStyles = StyleSheet.create({
         marginStart: gapBetweenImages / 2
     },
     card: {
-        overflow: 'hidden',
+        // overflow: 'hidden',
         borderRadius: 12,
         elevation: 4,
         margin: 0

@@ -1,51 +1,81 @@
 import React from 'react';
-import { View, Text, Button, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { Button } from 'react-native-paper';
 import CustomTextInput from '../components/textInput';
 import DateInput from '../components/dateInput';
 import CheckboxItem from '../components/checkboxItem';
 import CounterCard from '../components/counterCard';
 import PhotoPicker from '../components/photoPicker2';
 import NaviTableOfContent from '../components/naviTableOfContent';
+import NaviTitle from '../components/naviTitle'
+import History from '../components/history';
 import { useGlobalState } from './globalContext';
 
+export const assignIds = (items, parentId = '', level = 0) => {
+  return items.map((item, index) => {
+    const id = `${parentId}${item.title.replace(/\s+/g, '')}${index}`;
+    const newItem = { ...item, id };
+
+    if (item.items) {
+      newItem.items = assignIds(item.items, `${id}_`, level + 1);
+    }
+
+    return newItem;
+  });
+};
+
 export const parseScreen = (screenConfig, theme, navigation) => {
-  const { state, updateField } = useGlobalState();
+  const { state, updateField, startNewInspection, saveInspection } = useGlobalState();
 
   const checkEmail = (string) => !(string.includes("@") && string.includes("."));
 
   return screenConfig.items.map((item, index) => {
+    // console.log('item/index', {item,index});
     switch (item.type) {
-      case 'checklist':
+      case "saveButton":
         return (
           <Button
-            key={index}
-            title={item.label}
-            onPress={() => navigation.navigate(item.navigationTarget)}
-          />
-        );
-      case 'history':
-        return (
-          <Button
-            key={index}
-            title={item.label}
-            onPress={() => navigation.navigate(item.navigationTarget)}
-          />
+            key={item.id}
+            mode="contained"
+            onPress={() => {
+              console.log('Save button pressed')
+              saveInspection()
+              navigation.navigate('0')
+            }}
+            style={[localStyles.gap, {borderRadius:12, marginTop: 8}]}
+            title={item.title}
+            textColor={theme.colors.onPrimary}
+            borderColor={theme.colors.primary}
+            outlineStyle={[
+              ]}
+          > {item.title}
+          </Button>
         );
       case 'section':
         return (
           <NaviTableOfContent
-            key={index}
-            title={item.label}
-            onPress={() => navigation.navigate(item.navigationTarget)}
+            key={item.id}
+            title={item.title}
+            subTitle={item.subTitle || ''}
+            onPress={() => navigation.navigate(item.id)}
             theme={theme}
-            cardWidth={theme.cardWidth}
+            // cardWidth={theme.cardWidth}
           />
+        );
+      case 'mainSection':
+        return (
+          <NaviTitle
+            key={item.id}
+            title={item.title}
+            icon={item.icon}
+            onPress={() => navigation.navigate(item.id)}
+            theme={theme}></NaviTitle>
         );
       case 'textInput':
         return (
           <CustomTextInput
-            key={index}
-            label={item.label}
+          key={item.id}
+            label={item.title}
             value={state[item.objectName]?.value}
             onChangeText={val => updateField(item.objectName, { value: val })}
             theme={theme}
@@ -56,8 +86,8 @@ export const parseScreen = (screenConfig, theme, navigation) => {
       case 'textInputEmail':
         return (
           <CustomTextInput
-            key={index}
-            label={item.label}
+          key={item.id}
+            label={item.title}
             value={state[item.objectName]?.value}
             onChangeText={val => updateField(item.objectName, { value: val, error: checkEmail(val) })}
             theme={theme}
@@ -69,8 +99,8 @@ export const parseScreen = (screenConfig, theme, navigation) => {
       case 'counterInput':
         return (
           <CounterCard
-            key={index}
-            title={item.label}
+          key={item.id}
+            title={item.title}
             theme={theme}
             cardWidth={theme.cardWidth}
             initialCount={1}
@@ -82,8 +112,8 @@ export const parseScreen = (screenConfig, theme, navigation) => {
       case 'checkbox':
         return (
           <CheckboxItem
-            key={index}
-            label={item.label}
+          key={item.id}
+            label={item.title}
             theme={theme}
             checked={state[item.objectName]?.value || false}
             onValueChange={val => updateField(item.objectName, { value: val })}
@@ -93,7 +123,7 @@ export const parseScreen = (screenConfig, theme, navigation) => {
       case 'dateInput':
         return (
           <DateInput
-            key={index}
+          key={item.id}
             label={item.label}
             value={state[item.objectName]?.value}
             onChange={val => updateField(item.objectName, { value: val })}
@@ -103,7 +133,7 @@ export const parseScreen = (screenConfig, theme, navigation) => {
       case 'photoPicker':
         return (
           <PhotoPicker
-            key={index}
+            key={item.id}
             title={item.title}
             theme={theme}
             onValueChange={(updatedPhotos) => updateField(item.objectName, { value: updatedPhotos })}
@@ -111,8 +141,16 @@ export const parseScreen = (screenConfig, theme, navigation) => {
             style={localStyles.gap}
           />
         );
+      case 'historyScreen':
+        return (
+          <History 
+            theme={theme} 
+            key={item.id} 
+            navigation={navigation}
+            // onPress={() => navigation.navigate(item.id)}
+            ></History>);
       default:
-        return <Text key={index} style={localStyles.gap}>Unknown item type</Text>;
+        return <Text key={item.id} style={localStyles.gap}>Unknown item type</Text>;
     }
   });
 };

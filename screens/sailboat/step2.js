@@ -5,7 +5,6 @@ import PhotoPicker from '../../components/photoPicker2';
 import { createStyles } from '../../styles';
 
 
-
 export default function Step2({ navigation, theme }) {
 
   const styles = createStyles(theme);
