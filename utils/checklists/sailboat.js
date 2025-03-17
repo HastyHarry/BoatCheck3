@@ -2,6 +2,7 @@ export const config = {
     "type": "mainSection",
     'icon': 'sail-boat',
     "title": "Sailboat Checklist",
+    "name": "Sailboat",
     "items": [
         {
             "type": "section",

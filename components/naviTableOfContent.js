@@ -7,9 +7,11 @@ import { StyleSheet } from 'react-native';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default function NaviTableOfContent({ title, subTitle, onPress, theme, cardWidth }) {
+export default function NaviTableOfContent({ title, subTitle, onPress, theme, cardWidth, onLongPress}) {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity 
+      onPress={onPress}
+      onLongPress={onLongPress}>
       {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}> */}
       <Card style={[localStyles.card, { width: cardWidth, backgroundColor: theme.colors.surface }]}>
         <Card.Content 

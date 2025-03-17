@@ -26,7 +26,7 @@ registerTranslation('en', {
 export default function DateInput({ label, value, onChange, error, style = {} }) {
   console.log('Date value', value)
   // value = new Date()
-  const parsedValue = value ? new Date(value) : null;
+  const parsedValue = value ? new Date(value) : value;
   const theme = useTheme();
   const [visible, setVisible] = useState(false);
 

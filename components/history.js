@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View, Alert} from 'react-native';
 import { Card, Text } from 'react-native-paper';
 // Стили для карточки
 import { StyleSheet } from 'react-native';
@@ -9,27 +9,47 @@ import { useGlobalState } from '../utils/globalContext';
 import NaviTableOfContent from './naviTableOfContent';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default function History({theme}) {
+export default function History({ theme, navigation }) {
 
-    const { getSavedInspections, loadInspection } = useGlobalState();
+    const { getSavedInspections, loadInspection, deleteInspection} = useGlobalState();
 
     const inspections = getSavedInspections();
-    console.log(inspections, inspections)
+    console.log("inspections", inspections)
+
+    const handleDeleteItem = (id) => {
+        Alert.alert(
+            'Delete',
+            'Are you sure you want to delete?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: () => {
+                        deleteInspection(id)
+                    },
+                },
+            ]
+        );
+    };
 
     return (
         // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            inspections.map((inspection, index) => {
-                return (
-                    <NaviTableOfContent
-                        key={inspection.id}
-                        title={inspection.boatNameObj?.value || 'No boat name'}
-                        subTitle={inspection.metadata?.completionTime || ''}
-                        // onPress={() => navigation.navigate(item.id)}
-                        theme={theme}
-                    // cardWidth={theme.cardWidth}
-                    />
-                )
-            })
+        inspections.map((inspection, index) => {
+            return (
+                <NaviTableOfContent
+                    key={inspection.id}
+                    title={inspection.boatNameObj?.value || 'No boat name'}
+                    subTitle={inspection.metadata?.completionTime || ''}
+                    onPress={() => {
+                        navigation.navigate(inspection.metadata?.startingPoint || '0')
+                        loadInspection(inspection.id)
+                    }}
+                    onLongPress={() => handleDeleteItem(inspection.id)}
+                    theme={theme}
+                />
+            )
+        })
         // </View>
     )
 }

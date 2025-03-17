@@ -120,6 +120,9 @@ export const GlobalProvider = ({ children }) => {
   // Загрузить сохраненную инспекцию в текущее состояние (для просмотра)
   const loadInspection = (inspectionId) => {
     const inspection = savedInspections.find(insp => insp.id === inspectionId);
+
+    console.log('Loaded inspection:', {inspection,inspectionId});
+
     if (inspection) {
       setState(inspection);
       return true;

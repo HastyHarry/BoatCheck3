@@ -143,7 +143,12 @@ export const parseScreen = (screenConfig, theme, navigation) => {
         );
       case 'historyScreen':
         return (
-          <History theme={theme}></History>);
+          <History 
+            theme={theme} 
+            key={item.id} 
+            navigation={navigation}
+            // onPress={() => navigation.navigate(item.id)}
+            ></History>);
       default:
         return <Text key={item.id} style={localStyles.gap}>Unknown item type</Text>;
     }
