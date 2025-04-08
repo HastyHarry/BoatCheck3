@@ -12,7 +12,7 @@ const Stack = createStackNavigator();
 const DynamicNavigator = ({ theme }) => {
 
     const mainConfig = config()
-    console.log('mainConfig',JSON.stringify(mainConfig))
+    // console.log('mainConfig',JSON.stringify(mainConfig))
 
     const screensWithIds = assignIds(mainConfig.items);
 
@@ -39,7 +39,7 @@ const DynamicNavigator = ({ theme }) => {
                 />
             );
 
-            console.log('Generated Screen Component key:', screen.id);
+            // console.log('Generated Screen Component key:', screen.id);
 
             const nestedScreens = screen.items ? renderScreens(screen.items) : [];
             return [screenComponent, ...nestedScreens];

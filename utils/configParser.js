@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
+import { View, ScrollView, StyleSheet } from 'react-native';
+import { Button, Text } from 'react-native-paper';
 import CustomTextInput from '../components/textInput';
 import DateInput from '../components/dateInput';
 import CheckboxItem from '../components/checkboxItem';
 import CounterCard from '../components/counterCard';
 import PhotoPicker from '../components/photoPicker2';
 import NaviTableOfContent from '../components/naviTableOfContent';
-import NaviTitle from '../components/naviTitle'
+import NaviTitle from '../components/naviTitle';
 import History from '../components/history';
 import { useGlobalState } from './globalContext';
 
@@ -25,30 +25,106 @@ export const assignIds = (items, parentId = '', level = 0) => {
 };
 
 export const parseScreen = (screenConfig, theme, navigation) => {
-  const { state, updateField, startNewInspection, saveInspection } = useGlobalState();
+  const { 
+    activeInspection, 
+    updateField, 
+    getOrCreateInspection, 
+    saveInspection,
+    rootRouteName,
+    restorePreviousInspection
+  } = useGlobalState();
+  
+
+  const state = activeInspection.data || {};
 
   const checkEmail = (string) => !(string.includes("@") && string.includes("."));
 
-  return screenConfig.items.map((item, index) => {
-    // console.log('item/index', {item,index});
+  // Add a view mode banner if we're viewing a historical inspection
+  const viewBanner = activeInspection.isViewMode ? (
+    <View key="view-mode-banner" style={{
+      backgroundColor: theme.colors.primaryContainer,
+      padding: 8,
+      marginBottom: 16,
+      borderRadius: 8,
+      alignItems: 'center'
+    }}>
+      <Text style={{ 
+        color: theme.colors.onPrimaryContainer,
+        fontWeight: 'bold'
+      }}>
+        Viewing saved inspection (Read-only)
+      </Text>
+    </View>
+  ) : null;
+
+  // Map through items and render appropriate components
+  const renderedItems = screenConfig.items.map((item, index) => {
     switch (item.type) {
       case "saveButton":
-        return (
+        // Show back button if in view mode, otherwise show save button
+        return activeInspection.isViewMode ? (
           <Button
             key={item.id}
             mode="contained"
             onPress={() => {
-              console.log('Save button pressed')
-              saveInspection()
-              navigation.navigate('0')
+              console.log('Back button pressed from history view');
+              restorePreviousInspection(); // Restore the previous active inspection
+              // Navigate back to main screen using the stored root route name
+              try {
+                if (rootRouteName) {
+                  // If we have a root route name, navigate to it
+                  navigation.navigate(rootRouteName);
+                } else {
+                  // Fallback to popToTop if no root route name
+                  navigation.popToTop();
+                }
+              } catch (error) {
+                console.error('Navigation error:', error);
+                // Last resort - try to reset the navigation stack
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: navigation.getState().routes[0].name }]
+                });
+              }
+            }}
+            style={[localStyles.gap, {borderRadius:12, marginTop: 8}]}
+            title="Back to History"
+            textColor={theme.colors.onPrimary}
+            borderColor={theme.colors.primary}
+          > 
+            Back to History
+          </Button>
+        ) : (
+          <Button
+            key={item.id}
+            mode="contained"
+            onPress={() => {
+              console.log('Save button pressed');
+              saveInspection();
+              // Navigate back to main screen using the stored root route name
+              try {
+                if (rootRouteName) {
+                  // If we have a root route name, navigate to it
+                  navigation.navigate(rootRouteName);
+                } else {
+                  // Fallback to popToTop if no root route name
+                  navigation.popToTop();
+                }
+              } catch (error) {
+                console.error('Navigation error:', error);
+                // Last resort - try to reset the navigation stack
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: navigation.getState().routes[0].name }]
+                });
+              }
             }}
             style={[localStyles.gap, {borderRadius:12, marginTop: 8}]}
             title={item.title}
             textColor={theme.colors.onPrimary}
             borderColor={theme.colors.primary}
-            outlineStyle={[
-              ]}
-          > {item.title}
+          > 
+            {item.title}
           </Button>
         );
       case 'section':
@@ -59,7 +135,6 @@ export const parseScreen = (screenConfig, theme, navigation) => {
             subTitle={item.subTitle || ''}
             onPress={() => navigation.navigate(item.id)}
             theme={theme}
-            // cardWidth={theme.cardWidth}
           />
         );
       case 'mainSection':
@@ -68,66 +143,80 @@ export const parseScreen = (screenConfig, theme, navigation) => {
             key={item.id}
             title={item.title}
             icon={item.icon}
-            onPress={() => navigation.navigate(item.id)}
-            theme={theme}></NaviTitle>
+            onPress={() => {
+              // If this section is an inspection type, get or create inspection
+              // This is the ONLY place we should be calling getOrCreateInspection
+              if (item.inspectionType) {
+                console.log('Creating new inspection of type:', item);
+                getOrCreateInspection(item.inspectionType, item.title, item.id);
+              }
+              navigation.navigate(item.id);
+            }}
+            theme={theme}
+          />
         );
       case 'textInput':
         return (
           <CustomTextInput
-          key={item.id}
+            key={item.id}
             label={item.title}
-            value={state[item.objectName]?.value}
-            onChangeText={val => updateField(item.objectName, { value: val })}
+            value={state[item.id]?.value}
+            onChangeText={val => !activeInspection.isViewMode && updateField(item.id, { value: val })}
             theme={theme}
             placeholder={item.placeholder}
             style={localStyles.gap}
+            editable={!activeInspection.isViewMode}
           />
         );
       case 'textInputEmail':
         return (
           <CustomTextInput
-          key={item.id}
+            key={item.id}
             label={item.title}
-            value={state[item.objectName]?.value}
-            onChangeText={val => updateField(item.objectName, { value: val, error: checkEmail(val) })}
+            value={state[item.id]?.value}
+            onChangeText={val => !activeInspection.isViewMode && updateField(item.id, { value: val, error: checkEmail(val) })}
             theme={theme}
             placeholder={item.placeholder}
-            error={state[item.objectName]?.error}
+            error={state[item.id]?.error}
             style={localStyles.gap}
+            editable={!activeInspection.isViewMode}
           />
         );
       case 'counterInput':
         return (
           <CounterCard
-          key={item.id}
+            key={item.id}
             title={item.title}
             theme={theme}
             cardWidth={theme.cardWidth}
             initialCount={1}
-            value={state[item.objectName]?.value || 0}
-            onValueChange={val => updateField(item.objectName, { value: val })}
+            value={state[item.id]?.value || 0}
+            onValueChange={val => !activeInspection.isViewMode && updateField(item.id, { value: val })}
             style={localStyles.gap}
+            disabled={activeInspection.isViewMode}
           />
         );
       case 'checkbox':
         return (
           <CheckboxItem
-          key={item.id}
+            key={item.id}
             label={item.title}
             theme={theme}
-            checked={state[item.objectName]?.value || false}
-            onValueChange={val => updateField(item.objectName, { value: val })}
+            checked={state[item.id]?.value  || false}
+            onValueChange={val => !activeInspection.isViewMode && updateField(item.id, { value: val })}
             style={localStyles.gap}
+            disabled={activeInspection.isViewMode}
           />
         );
       case 'dateInput':
         return (
           <DateInput
-          key={item.id}
-            label={item.label}
-            value={state[item.objectName]?.value}
-            onChange={val => updateField(item.objectName, { value: val })}
+            key={item.id}
+            label={item.label || item.title}
+            value={state[item.id]?.value || state[item.id]?.value}
+            onChange={val => !activeInspection.isViewMode && updateField(item.id, { value: val })}
             style={localStyles.gap}
+            disabled={activeInspection.isViewMode}
           />
         );
       case 'photoPicker':
@@ -136,9 +225,10 @@ export const parseScreen = (screenConfig, theme, navigation) => {
             key={item.id}
             title={item.title}
             theme={theme}
-            onValueChange={(updatedPhotos) => updateField(item.objectName, { value: updatedPhotos })}
-            photos={state[item.objectName]?.value || []}
+            onValueChange={(updatedPhotos) => !activeInspection.isViewMode && updateField(item.id, { value: updatedPhotos })}
+            photos={state[item.id]?.value || []}
             style={localStyles.gap}
+            disabled={activeInspection.isViewMode}
           />
         );
       case 'historyScreen':
@@ -147,12 +237,15 @@ export const parseScreen = (screenConfig, theme, navigation) => {
             theme={theme} 
             key={item.id} 
             navigation={navigation}
-            // onPress={() => navigation.navigate(item.id)}
-            ></History>);
+          />
+        );
       default:
         return <Text key={item.id} style={localStyles.gap}>Unknown item type</Text>;
     }
   });
+  
+  // Return the banner at the top followed by the rendered items
+  return [viewBanner, ...renderedItems];
 };
 
 const localStyles = StyleSheet.create({

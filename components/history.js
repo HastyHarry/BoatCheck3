@@ -1,20 +1,27 @@
-import React from 'react';
-import { TouchableOpacity, View, Alert} from 'react-native';
-import { Card, Text } from 'react-native-paper';
-// Стили для карточки
+import React, { useState } from 'react';
+import { View, Text, Alert, ScrollView } from 'react-native';
+import { Card, Chip } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
-
-// import { View } from 'react-native-web';
 import { useGlobalState } from '../utils/globalContext';
 import NaviTableOfContent from './naviTableOfContent';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function History({ theme, navigation }) {
+    const { getSavedInspections, loadInspection, deleteInspection } = useGlobalState();
+    const [activeFilter, setActiveFilter] = useState(null);
 
-    const { getSavedInspections, loadInspection, deleteInspection} = useGlobalState();
-
-    const inspections = getSavedInspections();
-    console.log("inspections", inspections)
+    // Get all inspections
+    const allInspections = getSavedInspections();
+    console.log('allInspections', JSON.stringify(allInspections));
+    
+    // Get unique inspection types for filtering
+    const inspectionTypes = [...new Set(allInspections.map(insp => 
+        insp.type || 'unknown'
+    ))];
+    
+    // Apply filter if active
+    const inspections = activeFilter 
+        ? allInspections.filter(insp => insp.type === activeFilter)
+        : allInspections;
 
     const handleDeleteItem = (id) => {
         Alert.alert(
@@ -26,7 +33,7 @@ export default function History({ theme, navigation }) {
                     text: 'Delete',
                     style: 'destructive',
                     onPress: () => {
-                        deleteInspection(id)
+                        deleteInspection(id);
                     },
                 },
             ]
@@ -34,52 +41,88 @@ export default function History({ theme, navigation }) {
     };
 
     return (
-        // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        inspections.map((inspection, index) => {
-            return (
-                <NaviTableOfContent
-                    key={inspection.id}
-                    title={inspection.boatNameObj?.value || 'No boat name'}
-                    subTitle={inspection.metadata?.completionTime || ''}
-                    onPress={() => {
-                        navigation.navigate(inspection.metadata?.startingPoint || '0')
-                        loadInspection(inspection.id)
-                    }}
-                    onLongPress={() => handleDeleteItem(inspection.id)}
-                    theme={theme}
-                />
-            )
-        })
-        // </View>
-    )
+        <View style={{ flex: 1 }}>
+            {/* Filter chips */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterContainer}>
+                <Chip
+                    mode={activeFilter === null ? 'flat' : 'outlined'}
+                    selected={activeFilter === null}
+                    onPress={() => setActiveFilter(null)}
+                    style={styles.filterChip}
+                >
+                    All
+                </Chip>
+                {inspectionTypes.map((type, index) => (
+                    <Chip
+                        key={index}
+                        mode={activeFilter === type ? 'flat' : 'outlined'}
+                        selected={activeFilter === type}
+                        onPress={() => setActiveFilter(type)}
+                        style={styles.filterChip}
+                    >
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </Chip>
+                ))}
+            </ScrollView>
+
+            {/* List of inspections */}
+            {inspections.length === 0 ? (
+                <View style={styles.emptyState}>
+                    <Text style={{ color: theme.colors.onSurfaceVariant }}>
+                        {activeFilter 
+                            ? `No ${activeFilter} inspections found`
+                            : 'No inspections found'}
+                    </Text>
+                </View>
+            ) : (
+                inspections.map((inspection, index) => {
+                    // Format date for readability
+                    const dateStr = inspection.data?.metadata?.completionTime 
+                        ? new Date(inspection.data.metadata.completionTime).toLocaleString()
+                        : 'No date';
+                    
+                        console.log('inspection.data', inspection.data);
+                    // Get boat name or default
+                    const boatName = inspection.data?.boatNameObj?.value || 'No boat name';
+                    
+                    // Get inspection type for display
+                    const typeDisplay = inspection.type 
+                        ? `${inspection.type.charAt(0).toUpperCase() + inspection.type.slice(1)}` 
+                        : '';
+
+                    return (
+                        <NaviTableOfContent
+                            key={inspection.id}
+                            // title={`${boatName} (${typeDisplay})`}
+                            title={`${typeDisplay}`}
+                            subTitle={dateStr}
+                            onPress={() => {
+                                const startScreen = inspection.data?.metadata?.startingPoint || '0';
+                                loadInspection(inspection.id);
+                                navigation.navigate(startScreen);
+                            }}
+                            onLongPress={() => handleDeleteItem(inspection.id)}
+                            theme={theme}
+                        />
+                    );
+                })
+            )}
+        </View>
+    );
 }
 
-
-const localStyles = StyleSheet.create({
-    card: {
-        marginVertical: 8,
-        height: 80,
-        borderRadius: 12,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-        elevation: 4,
-        alignItems: 'flex-start',
-        justifyContent: 'center'
+const styles = StyleSheet.create({
+    filterContainer: {
+        padding: 8,
+        flexDirection: 'row',
     },
-    cardContent: {
+    filterChip: {
+        marginRight: 8,
+    },
+    emptyState: {
         flex: 1,
-        // paddingVertical: 0,
         justifyContent: 'center',
-        alignItems: 'flex-start',
-    },
-    cardTextTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-    },
-    cardTextSubTitle: {
-        fontSize: 14,
-        fontWeight: '300',
-        lineHeight: 24
+        alignItems: 'center',
+        padding: 16,
     },
 });

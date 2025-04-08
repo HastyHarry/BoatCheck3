@@ -3,6 +3,7 @@ export const config = {
     'icon': 'sail-boat',
     "title": "Sailboat Checklist",
     "name": "Sailboat",
+    "inspectionType": "sailboat",
     "items": [
         {
             "type": "section",

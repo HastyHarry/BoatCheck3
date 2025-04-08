@@ -9,7 +9,8 @@ export default function CustomTextInput({
   error = false, 
   placeholder = '', 
   theme, 
-  style = {} 
+  style = {},
+  editable = true
 }) {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -22,6 +23,7 @@ export default function CustomTextInput({
       placeholderTextColor = {theme.colors.primary}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
+      editable={editable}
       mode = "outlined"
       outlineStyle={[
         {borderRadius:12},

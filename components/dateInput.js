@@ -23,7 +23,7 @@ registerTranslation('en', {
     close: 'Close',
   });
 
-export default function DateInput({ label, value, onChange, error, style = {} }) {
+export default function DateInput({ label, value, onChange, error, style = {}, disabled = false }) {
   console.log('Date value', value)
   // value = new Date()
   const parsedValue = value ? new Date(value) : value;
@@ -54,8 +54,8 @@ export default function DateInput({ label, value, onChange, error, style = {} })
           activeOutlineColor={error ? theme.colors.error : theme.colors.primary}
           textColor={theme.colors.onSurface}
           placeholderTextColor={theme.colors.onSurfaceVariant}
-          right={<TextInput.Icon icon="calendar" iconColor={theme.colors.primary} onPress={() => setVisible(true)} />}
-          style={[{ backgroundColor: theme.colors.surface }, {marginTop:8}, style]}
+          right={<TextInput.Icon icon="calendar" iconColor={disabled ? theme.colors.onSurfaceDisabled : theme.colors.primary} onPress={disabled ? null : () => setVisible(true)} />}
+          style={[{ backgroundColor: theme.colors.surface }, {marginTop:8}, disabled && { opacity: 0.7 }, style]}
         />
       </TouchableOpacity>
 

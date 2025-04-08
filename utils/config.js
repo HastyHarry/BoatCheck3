@@ -1,4 +1,5 @@
 import { config as sailboatConfig } from './checklists/sailboat'
+import { config as catamaranConfig } from './checklists/catamaran'
 
 export const config = () => {
 
@@ -8,7 +9,17 @@ export const config = () => {
         "title": "Submit",
         "items": []
     }
-    sailboatConfig.items.push(saveButton);
+
+
+    // Check if a save button already exists
+
+    if (!sailboatConfig.items.some(item => item.type === "saveButton")) {
+        sailboatConfig.items.push(saveButton);
+    }
+    
+    if (!catamaranConfig.items.some(item => item.type === "saveButton")){
+        catamaranConfig.items.push(saveButton);
+    }
 
     const mainConf = {
         "title": "Main",
@@ -17,6 +28,7 @@ export const config = () => {
                 "title": "",
                 "items": [
                     sailboatConfig,
+                    catamaranConfig,
                     {
                         "type": "mainSection",
                         'icon': 'history',

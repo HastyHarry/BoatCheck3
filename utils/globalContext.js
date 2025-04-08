@@ -4,37 +4,29 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
-  // Текущее состояние инспекции
-  const [state, setState] = useState({
-    // checkboxObj: { value: false },
-    // Добавим метаданные для текущей инспекции
-    metadata: {
-      startTime: null,
-      name: '',
-      isCompleted: false
-    }
+  // Store the root navigation route name
+  const [rootRouteName, setRootRouteName] = useState(null);
+  
+  // Current active inspection state
+  const [activeInspection, setActiveInspection] = useState({
+    type: null, // 'sailboat', 'catamaran', etc.
+    data: {
+      metadata: {
+        startTime: null,
+        name: '',
+        isCompleted: false
+      }
+    },
+    isViewMode: false // Flag to indicate if inspection is being viewed from history
   });
   
-  // Список сохраненных инспекций
+  // Store previous active inspection when viewing history
+  const [previousActiveInspection, setPreviousActiveInspection] = useState(null);
+  
+  // List of saved inspections
   const [savedInspections, setSavedInspections] = useState([]);
 
-  // Загрузка текущего состояния
-  useEffect(() => {
-    const loadState = async () => {
-      try {
-        const storedState = await AsyncStorage.getItem('appState');
-        if (storedState) {
-          setState(JSON.parse(storedState));
-        }
-      } catch (error) {
-        console.error('Error loading state:', error);
-      }
-    };
-
-    loadState();
-  }, []);
-
-  // Загрузка списка сохраненных инспекций
+  // Load saved inspections from storage
   useEffect(() => {
     const loadSavedInspections = async () => {
       try {
@@ -50,87 +42,135 @@ export const GlobalProvider = ({ children }) => {
     loadSavedInspections();
   }, []);
 
-  // Сохранение текущего состояния
-  useEffect(() => {
-    const saveState = async () => {
-      try {
-        await AsyncStorage.setItem('appState', JSON.stringify(state));
-      } catch (error) {
-        console.error('Error saving state:', error);
+  // Get or create an inspection of specific type
+  const getOrCreateInspection = (type, name = '', startingPoint) => {
+    // Check if we already have an active inspection of this type
+    if (activeInspection.type === type) {
+      console.log('Using existing inspection of type:', type);
+      return activeInspection; // Return the existing inspection
+    }
+    
+    // Otherwise, create a new inspection
+    console.log('Creating new inspection of type:', type);
+    const newInspection = {
+      type: type,
+      data: {
+        metadata: {
+          startTime: new Date().toISOString(),
+          name: name,
+          inspectionType: type,
+          isCompleted: false,
+          startingPoint, // This will store the initial screen ID
+        }
       }
     };
-
-    saveState();
-  }, [state]);
-
-  // Обновление поля в состоянии
-  const updateField = (key, value) => {
-    setState(prevState => ({
-      ...prevState,
-      [key]: value,
-    }));
+    
+    setActiveInspection(newInspection);
+    return newInspection;
   };
 
-  // Начать новую инспекцию
-  const startNewInspection = (name = '') => {
-    setState({
-      // checkboxObj: { value: false },
-      metadata: {
-        startTime: new Date().toISOString(),
-        name: name,
-        isCompleted: false
-      }
+  // Update a field in the current active inspection WITHOUT triggering setActiveInspection
+  const updateField = (key, value) => {
+
+    // Instead of setting the entire state, just update the specific field
+    // This will prevent full re-renders and keyboard dismissal
+    
+    setActiveInspection(prev => {
+      const newData = {
+        ...prev.data,
+        [key]: value,
+      };
+      
+      return {
+        ...prev,
+        data: newData
+      };
     });
   };
 
-  // Сохранить завершенную инспекцию
+  // Save the completed active inspection
   const saveInspection = async () => {
     try {
-      // Создаем копию текущего состояния с обновленными метаданными
+      if (!activeInspection.type) {
+        console.error('No active inspection type to save');
+        return false;
+      }
+      
+      // Create a copy of current state with updated metadata
       const completedInspection = {
-        ...state,
-        metadata: {
-          ...state.metadata,
-          isCompleted: true,
-          completionTime: new Date().toISOString()
+        ...activeInspection,
+        data: {
+          ...activeInspection.data,
+          metadata: {
+            ...activeInspection.data.metadata,
+            isCompleted: true,
+            completionTime: new Date().toISOString()
+          }
         },
-        id: Date.now().toString() // Уникальный идентификатор для инспекции
+        id: Date.now().toString() // Unique identifier for the inspection
       };
       
-      // Добавляем в список сохраненных инспекций
+      // Add to the list of saved inspections
       const updatedInspections = [...savedInspections, completedInspection];
       await AsyncStorage.setItem('savedInspections', JSON.stringify(updatedInspections));
       setSavedInspections(updatedInspections);
       
-      // Очищаем текущее состояние для новой инспекции
-      startNewInspection();
+      // Clear the current active inspection
+      setActiveInspection({
+        type: null,
+        data: {
+          metadata: {
+            startTime: null,
+            name: '',
+            isCompleted: false
+          }
+        },
+        isViewMode: false
+      });
       
-      return true; // Возвращаем успешный результат
+      return true; // Return success
     } catch (error) {
       console.error('Error saving inspection:', error);
-      return false; // Возвращаем ошибку
+      return false; // Return error
     }
   };
   
-  // Получить список сохраненных инспекций
-  const getSavedInspections = () => {
+  // Get list of saved inspections, optionally filtered by type
+  const getSavedInspections = (type = null) => {
+    if (type) {
+      return savedInspections.filter(inspection => inspection.type === type);
+    }
     return savedInspections;
   };
   
-  // Загрузить сохраненную инспекцию в текущее состояние (для просмотра)
+  // Load a saved inspection into the active state
   const loadInspection = (inspectionId) => {
     const inspection = savedInspections.find(insp => insp.id === inspectionId);
 
-    console.log('Loaded inspection:', {inspection,inspectionId});
-
     if (inspection) {
-      setState(inspection);
+      // Save the current inspection state before loading the historical one
+      setPreviousActiveInspection(activeInspection);
+      
+      setActiveInspection({
+        ...inspection,
+        isViewMode: true // Set to view mode when loading from history
+      });
+      return true;
+    }
+    return false;
+  };
+  
+  // Restore the previous active inspection when leaving history view
+  const restorePreviousInspection = () => {
+    if (previousActiveInspection) {
+      setActiveInspection(previousActiveInspection);
+      setPreviousActiveInspection(null);
       return true;
     }
     return false;
   };
 
-  // Удалить сохраненную инспекцию
+  // Delete a saved inspection
   const deleteInspection = async (inspectionId) => {
     try {
       const updatedInspections = savedInspections.filter(insp => insp.id !== inspectionId);
@@ -143,16 +183,18 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
-  // Очистка всех данных
+  // Clear all data
   const clearAllData = async () => {
     try {
       await AsyncStorage.clear();
-      setState({
-        checkboxObj: { value: false },
-        metadata: {
-          startTime: null,
-          name: '',
-          isCompleted: false
+      setActiveInspection({
+        type: null,
+        data: {
+          metadata: {
+            startTime: null,
+            name: '',
+            isCompleted: false
+          }
         }
       });
       setSavedInspections([]);
@@ -161,17 +203,37 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
+  // Set starting point for navigation (to be used when a section is opened)
+  const setStartingPoint = (screenId) => {
+    if (activeInspection.type) {
+      setActiveInspection(prev => ({
+        ...prev,
+        data: {
+          ...prev.data,
+          metadata: {
+            ...prev.data.metadata,
+            startingPoint: screenId
+          }
+        }
+      }));
+    }
+  };
+
   return (
     <GlobalContext.Provider value={{ 
-      state, 
+      activeInspection, 
       updateField, 
       clearAllData,
-      startNewInspection,
+      getOrCreateInspection,
       saveInspection,
       getSavedInspections,
       loadInspection,
+      restorePreviousInspection,
       deleteInspection,
-      savedInspections
+      savedInspections,
+      rootRouteName,
+      setRootRouteName,
+      setStartingPoint
     }}>
       {children}
     </GlobalContext.Provider>

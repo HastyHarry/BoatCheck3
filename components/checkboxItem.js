@@ -3,14 +3,15 @@ import { StyleSheet, View } from 'react-native';
 import { Card, Text } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default function CheckboxItem({ label = 'Check item', hint = "", theme, style = {}, checked, onValueChange }) {
+export default function CheckboxItem({ label = 'Check item', hint = "", theme, style = {}, checked, onValueChange, disabled = false }) {
   
   return (
     <Card
-      onPress={x => onValueChange(!checked)}
+      onPress={disabled ? null : x => onValueChange(!checked)}
       style={[
         localStyles.card,
         { backgroundColor: checked ? (theme?.colors?.surfaceVariant || '#C8E6C9') : (theme?.colors?.surface || '#fff') },
+        disabled && { opacity: 0.7 },
         style,
       ]}
     >

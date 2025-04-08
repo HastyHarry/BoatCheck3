@@ -8,7 +8,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 const gapBetweenImages = 8;
 const numColumns = 3;
 
-export default function PhotoPicker({ title, onImagesSelected, theme, onValueChange, photos }) {
+export default function PhotoPicker({ title, onImagesSelected, theme, onValueChange, photos, disabled = false }) {
     const defaultCardWidth = theme.workingAreaWidth;
     const cardSideSize = Math.floor((defaultCardWidth - gapBetweenImages * (numColumns + 1)) / numColumns);
     const gridWidth = cardSideSize * numColumns + gapBetweenImages * (numColumns + 1);
@@ -91,7 +91,7 @@ export default function PhotoPicker({ title, onImagesSelected, theme, onValueCha
                     {photos.map((photoUri, index) => (
                         <TouchableOpacity
                             key={index}
-                            onLongPress={() => handleDeletePhoto(photoUri)}
+                            onLongPress={disabled ? null : () => handleDeletePhoto(photoUri)}
                             onPress={() => handlePhotoPress(photoUri)}
                             style={localStyles.cardWrapper}
                         >
@@ -103,14 +103,14 @@ export default function PhotoPicker({ title, onImagesSelected, theme, onValueCha
                             </Card>
                         </TouchableOpacity>
                     ))}
-                    <TouchableOpacity onPress={takePhoto} style={localStyles.cardWrapper}>
+                    {!disabled && <TouchableOpacity onPress={takePhoto} style={localStyles.cardWrapper}>
                         <Card style={[localStyles.card, { width: cardSideSize, height: cardSideSize }]}>
                             <Card.Content style={localStyles.addPhotoContent}>
                                 <MaterialCommunityIcons name="camera" size={50} color="gray" />
                                 <Text style={localStyles.addPhotoText}>Add Photo</Text>
                             </Card.Content>
                         </Card>
-                    </TouchableOpacity>
+                    </TouchableOpacity>}
                 </View>
             </View>
 
